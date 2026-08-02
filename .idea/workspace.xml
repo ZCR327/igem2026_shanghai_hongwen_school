@@ -7,7 +7,14 @@
     <option name="selectedModelId" value="auto" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="1d498c22-3370-457e-a30d-2130faffa5a0" name="更改" comment="commit message" />
+    <list default="true" id="1d498c22-3370-457e-a30d-2130faffa5a0" name="更改" comment="commit message">
+      <change afterPath="$PROJECT_DIR$/brewxos_assembly_only.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/brewxos_assembly_v2.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/brewxos_model.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/brewxos_model_20260723_215810_177.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/brewxos_model_20260723_221512_327.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -28,44 +35,44 @@
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
-  <component name="GitHubPullRequestSearchHistory"><![CDATA[{
-  "lastFilter": {
-    "state": "OPEN",
-    "assignee": "ZCR327"
+  <component name="GitHubPullRequestSearchHistory">{
+  &quot;lastFilter&quot;: {
+    &quot;state&quot;: &quot;OPEN&quot;,
+    &quot;assignee&quot;: &quot;ZCR327&quot;
   }
-}]]></component>
+}</component>
   <component name="GithubDefaultAccount">
     <option name="defaultAccountId" value="c7da3f39-b4d0-42a4-83cc-710bb4f60232" />
   </component>
-  <component name="GithubPullRequestsUISettings"><![CDATA[{
-  "selectedUrlAndAccountId": {
-    "url": "https://github.com/ZCR327/igem2026_shanghai_hongwen_school",
-    "accountId": "c7da3f39-b4d0-42a4-83cc-710bb4f60232"
+  <component name="GithubPullRequestsUISettings">{
+  &quot;selectedUrlAndAccountId&quot;: {
+    &quot;url&quot;: &quot;https://github.com/ZCR327/igem2026_shanghai_hongwen_school&quot;,
+    &quot;accountId&quot;: &quot;c7da3f39-b4d0-42a4-83cc-710bb4f60232&quot;
   }
-}]]></component>
+}</component>
   <component name="McpProjectServerCommands">
     <commands />
     <urls />
   </component>
   <component name="NextEditCompletionFeaturesState">
     <decayedCancelled>
-      <entry key="MS100" value="1.0" />
-      <entry key="MS500" value="1.0" />
-      <entry key="S2" value="1.0000000000000149" />
-      <entry key="S5" value="1.0000029423887373" />
-      <entry key="S10" value="1.0017381989070573" />
-      <entry key="S30" value="1.283771766254409" />
-      <entry key="S60" value="2.8606724746772683" />
-      <entry key="M2" value="6.192513487163863" />
-      <entry key="M5" value="10.781547266119853" />
-      <entry key="M10" value="13.107239206138882" />
-      <entry key="M15" value="14.002206590811168" />
-      <entry key="M30" value="14.964741919276985" />
-      <entry key="H1" value="15.472943344570314" />
-      <entry key="H2" value="15.734071234282442" />
-      <entry key="H4" value="15.866429977495518" />
-      <entry key="D1" value="15.977653739418464" />
-      <entry key="W1" value="15.996805599260652" />
+      <entry key="MS100" value="1.000023356594825" />
+      <entry key="MS500" value="1.2062073604830827" />
+      <entry key="S2" value="2.1332848163393265" />
+      <entry key="S5" value="2.5935052769522153" />
+      <entry key="S10" value="2.786768548611829" />
+      <entry key="S30" value="3.1988354302774717" />
+      <entry key="S60" value="4.788028408128399" />
+      <entry key="M2" value="8.124414781119686" />
+      <entry key="M5" value="12.736768506365822" />
+      <entry key="M10" value="15.080399605012854" />
+      <entry key="M15" value="15.983171269572097" />
+      <entry key="M30" value="16.954609851447422" />
+      <entry key="H1" value="17.467715080482282" />
+      <entry key="H2" value="17.731415418895562" />
+      <entry key="H4" value="17.865091505184125" />
+      <entry key="D1" value="17.97742918104341" />
+      <entry key="W1" value="17.996773483094298" />
     </decayedCancelled>
     <decayedSelected>
       <entry key="MS100" value="0.0" />
@@ -87,23 +94,23 @@
       <entry key="W1" value="0.0" />
     </decayedSelected>
     <decayedShown>
-      <entry key="MS100" value="0.9330329915368074" />
-      <entry key="MS500" value="0.9862327044933592" />
-      <entry key="S2" value="0.9965402628278827" />
-      <entry key="S5" value="0.9986176003430743" />
-      <entry key="S10" value="1.0010428964182356" />
-      <entry key="S30" value="1.2834401183865147" />
-      <entry key="S60" value="2.8602686427234185" />
-      <entry key="M2" value="6.192071731293043" />
-      <entry key="M5" value="10.781240752341938" />
-      <entry key="M10" value="13.107053281192664" />
-      <entry key="M15" value="14.002074277865665" />
-      <entry key="M30" value="14.964671270298531" />
-      <entry key="H1" value="15.472906834997495" />
-      <entry key="H2" value="15.734052675145401" />
-      <entry key="H4" value="15.866420620807697" />
-      <entry key="D1" value="15.977652169170893" />
-      <entry key="W1" value="15.996805374673924" />
+      <entry key="MS100" value="0.8645580879475224" />
+      <entry key="MS500" value="1.1729727797848655" />
+      <entry key="S2" value="2.1197598201877867" />
+      <entry key="S5" value="2.5870662334756567" />
+      <entry key="S10" value="2.7833326777042937" />
+      <entry key="S30" value="3.197541683780025" />
+      <entry key="S60" value="4.787140241879123" />
+      <entry key="M2" value="8.12373004253173" />
+      <entry key="M5" value="12.736364001096753" />
+      <entry key="M10" value="15.08016440695431" />
+      <entry key="M15" value="15.98300602913231" />
+      <entry key="M30" value="16.954522694206005" />
+      <entry key="H1" value="17.467670304593153" />
+      <entry key="H2" value="17.73139272341354" />
+      <entry key="H4" value="17.865080079508967" />
+      <entry key="D1" value="17.977427265849876" />
+      <entry key="W1" value="17.996773209226745" />
     </decayedShown>
   </component>
   <component name="PerforceDirect.Settings">
@@ -117,31 +124,31 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "ASKED_SHARE_PROJECT_CONFIGURATION_FILES": "true",
-    "Git.Working.Tree.Tab.closed.by.user": "closed",
-    "ModuleVcsDetector.initialDetectionPerformed": "true",
-    "Python.test.executor": "Run",
-    "RunOnceActivity.MCP Project settings loaded": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
-    "RunOnceActivity.git.unshallow": "true",
-    "RunOnceActivity.typescript.service.memoryLimit.init": "true",
-    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
-    "codeWithMe.voiceChat.enabledByDefault": "false",
-    "copilot.chat.legacySessionMetadata.migrated": "true",
-    "git-widget-placeholder": "master",
-    "ignore.virus.scanning.warn.message": "true",
-    "javascript.preferred.runtime.type.id": "node",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs_package_manager_path": "npm",
-    "settings.editor.selected.configurable": "project.propVCSSupport.DirectoryMappings"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;ASKED_SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
+    &quot;Git.Working.Tree.Tab.closed.by.user&quot;: &quot;closed&quot;,
+    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
+    &quot;Python.test.executor&quot;: &quot;Run&quot;,
+    &quot;RunOnceActivity.MCP Project settings loaded&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.typescript.service.memoryLimit.init&quot;: &quot;true&quot;,
+    &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
+    &quot;codeWithMe.voiceChat.enabledByDefault&quot;: &quot;false&quot;,
+    &quot;copilot.chat.legacySessionMetadata.migrated&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;master&quot;,
+    &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
+    &quot;javascript.preferred.runtime.type.id&quot;: &quot;node&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;project.propVCSSupport.DirectoryMappings&quot;
   }
-}]]></component>
+}</component>
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
@@ -165,7 +172,15 @@
       <option name="project" value="LOCAL" />
       <updated>1785679651459</updated>
     </task>
-    <option name="localTasksCounter" value="2" />
+    <task id="LOCAL-00002" summary="commit message">
+      <option name="closed" value="true" />
+      <created>1785680018948</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1785680018948</updated>
+    </task>
+    <option name="localTasksCounter" value="3" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
