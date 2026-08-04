@@ -1,12 +1,4 @@
-"""
-BrewXOS Fermenter Mini - Blender 3D Model Generator
-=====================================================
-基于 BrewXOS 硬件文档生成完整的发酵控制器 3D 模型。
-在 Blender Scripting 工作台中运行此脚本。
 
-外型尺寸: 350 × 350 × 450 mm
-零件数: 23 件
-"""
 
 import bpy
 import math
@@ -462,23 +454,7 @@ def create_all():
     bg.inputs['Color'].default_value = (0.92, 0.90, 0.86, 1.0)
     bg.inputs['Strength'].default_value = 0.3
 
-    print("=" * 60)
-    print("建模完成! BrewXOS Fermenter Mini")
-    print(f"外型尺寸: 350 x 350 x 450 mm")
-    print(f"零件: 底板/顶盖/侧板/前面板/后盖板/罐体/罐盖/")
-    print(f"      电机/搅拌轴/桨叶/加热膜/保温层/主板/驱动板/")
-    print(f"      TFT/急停/按钮/LED/蠕动泵x3/气泵/流量计/")
-    print(f"      管路/支脚/排线/过滤器/UV-C灯环")
-    print("")
-    print("快捷键:")
-    print("  Numpad 0  = 主相机视角")
-    print("  Numpad 1  = 前视图")
-    print("  Numpad 3  = 右视图")
-    print("  Numpad 7  = 顶视图")
-    print("  Z → Wireframe = 线框模式")
-    print("  Z → Material Preview = 材质预览")
-    print("  Z → Rendered = 渲染预览 (Cycles)")
-    print("=" * 60)
+
 
 
 # ============================================================

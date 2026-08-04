@@ -1,8 +1,4 @@
-"""
-BrewXOS Fermenter Mini — 整机装配 v2 (bmesh 直建版)
-=====================================================
-运行后 console 会打印 "=== BrewXOS Assembly v2 START ==="，确认是用这一版。
-"""
+
 
 import bpy
 import bmesh
@@ -296,6 +292,3 @@ init_mat()
 build()
 setup_scene()
 
-print(f"=== DONE: {len(bpy.data.objects)} 个物体，1 个完整机箱 ===")
-print("  Camera_Main: 前方斜45°全景")
-print("  F12 渲染  |  或选 Material Preview 模式查看")
