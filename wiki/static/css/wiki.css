@@ -1,0 +1,96 @@
+/* BrewXOS Wiki - Minimal CSS */
+body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+    margin: 0;
+    padding: 0;
+    background: #f6f8fa;
+}
+
+.wiki-header {
+    background: linear-gradient(135deg, #1f3a5f 0%, #2c5282 100%);
+    color: white;
+    padding: 2rem 3rem;
+    text-align: center;
+}
+
+.wiki-header h1 {
+    margin: 0;
+    font-size: 2.5rem;
+}
+
+.subtitle {
+    margin: 0.5rem 0 0;
+    opacity: 0.9;
+}
+
+.wiki-nav {
+    background: #24292f;
+    padding: 0.8rem 2rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem 1.5rem;
+    justify-content: center;
+}
+
+.wiki-nav a {
+    color: #c9d1d9;
+    text-decoration: none;
+    padding: 0.4rem 0.8rem;
+    border-radius: 4px;
+    font-size: 0.95rem;
+}
+
+.wiki-nav a:hover {
+    background: #30363d;
+    color: white;
+}
+
+.wiki-nav a.active {
+    background: #1f6feb;
+    color: white;
+}
+
+main.markdown-body {
+    max-width: 960px;
+    margin: 2rem auto;
+    padding: 2rem 3rem;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+.wiki-footer {
+    text-align: center;
+    padding: 2rem;
+    color: #586069;
+    font-size: 0.9rem;
+}
+
+table {
+    border-collapse: collapse;
+    width: 100%;
+    margin: 1rem 0;
+}
+
+th, td {
+    border: 1px solid #d0d7de;
+    padding: 0.6rem 1rem;
+    text-align: left;
+}
+
+th {
+    background: #f6f8fa;
+    font-weight: 600;
+}
+
+img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 4px;
+    margin: 0.5rem 0;
+}
+
+h1, h2, h3 {
+    border-bottom: 1px solid #d0d7de;
+    padding-bottom: 0.3rem;
+}
