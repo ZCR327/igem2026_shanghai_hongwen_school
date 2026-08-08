@@ -1,0 +1,153 @@
+=== PARAGRAPHS ===
+[0][Heading 1]       7.14-18 Experimental summary
+[1][Normal] 7.14-18 Experimental purpose:
+[2][Normal] Build pUC57-T7 promoter-RBS-NicA-RBS-NicB-RBS-NicC-rrnb-recombinant plasmid T
+[4][Normal] 7.14 PCR
+[5][Normal] -Experimental objective: Clone NicA, NicB, NicC, Vector, Lac1  
+[6][Normal] -Experimental method: PCR technology
+[7][Normal] -Experimental Principle: PCR is a technique for amplifying specific DNA fragments in vitro, based on the semi-conservative replication mechanism of DNA. The specific process involves the following three-step cycle:
+[8][Normal] Denaturation: The reaction system is heated to 90-95°C to separate the double-stranded DNA into single-stranded templates.
+[9][Normal] Annealing: The temperature is lowered to 50-65°C, allowing primers to specifically bind to the complementary sequences of the single-stranded template DNA.
+[10][Normal] Extension: At 72°C, DNA polymerase (such as Taq enzyme) uses dNTPs as raw materials to synthesize new strands along the template.
+[12][Normal] -Experimental steps: The students were divided into five groups, and each group cloned NicA, NicB, NicC, Vector, and Lac1. 
+[13][Normal] 1. In the EP tube, add 21 microliters of water, 2 microliters of template, 1 microliter of forward primer, 1 microliter of reverse primer, and 25 microliters of 2✖Phanta flash master mix (Vazyme).
+[15][Normal]  2.Place the EP tube containing the required materials on the oscillator to ensure that the contents are thoroughly mixed.
+[22][Normal] 3.Using PCR technology: 
+[23][Normal] Initial Denaturation: Heat the reaction mixture to 98℃ for 30 seconds.
+[24][Normal] Denaturation‌: Maintain the reaction mixture at 98℃ for 10 seconds to separate the double-stranded DNA into single-stranded templates.‌‌
+[25][Normal] ‌Annealing‌: Lower the temperature to 60℃ and maintain for 5 seconds, allowing the primers to specifically bind to the complementary sequences of the template DNA strands.‌‌
+[26][Normal] ‌Extension‌: Raise the temperature to 72℃ and maintain for 40 seconds. The DNA polymerase (such as Taq enzyme) synthesizes a new strand using dNTPs as the raw material along the template.
+[27][Normal] The Initial Denaturation- Annealing- Extension steps are repeated 34 times.
+[28][Normal] Final extension- 72℃ for 1 minute
+[31][Normal] 7.15 AGE and Preparation of LB Liquid Medium and High-Pressure Steam Sterilization
+[32][Normal] -AGE
+[33][Normal] -Experimental Instruments：
+[34][Normal] Electrophoresis line, electrophoresis tank, electrophoresis comb, gel-making tank, electrophoresis power supply (voltage regulator), gel exposure instrument
+[36][Normal] -Experimental Principle:
+[37][Normal] The movement of charged substances in an electric field is called electrophoresis. Gel electrophoresis using agarose gel is a commonly used method for separating and identifying DNA and RNA. This electrophoresis method uses agarose gel as the support and utilizes the charge effect and molecular sieving effect of DNA molecules during their movement to achieve the purpose of separating mixtures. DNA molecules carry a negative charge in solutions above their isoelectric point and move towards the anode in an electric field. Under a certain electric field strength, the migration speed of DNA molecules depends on the molecular sieving effect, that is, the size and configuration of the molecule are the main influencing factors. The migration speed of DNA molecules is inversely proportional to their relative molecular weight. Nucleic acid dyes are embedded in the double-stranded base pairs of DNA and emit purple light under ultraviolet irradiation.
+[39][Normal] -Experimental steps:
+[40][Normal] 1. Preparation of agarose gel: Weigh 2.5g of agarose (1% w/v), add 25ml (1x) electrophoresis buffer (TAE), shake evenly, and place it in a microwave oven to melt uniformly.
+[41][Normal] 2. Preparation of gel plate: When the solution cools down to around 50 degrees Celsius, add 2.5ul of Ultra Blue (an alternative to EB), shake well, and pour it onto the gel plate. Remove air bubbles, let the gel cool and solidify, then gently lift the comb vertically.
+[42][Normal] 3. Loading samples: Use a pipette to add the samples into the sample wells of the gel plate separately. After adding each sample, change the loading head to prevent contamination.
+[43][Normal] 4. Electrophoresis: After loading the samples, connect the gel plate to the power supply for electrophoresis. During this process, the speed of DNA migration is proportional to the voltage. The samples move from the negative electrode to the positive electrode. When bromophenol blue moves about 1cm from the bottom edge of the gel plate, stop the electrophoresis.
+[44][Normal] 5. Observation and recording: Remove the gel. Observe the staining under a UV lamp with a wavelength of 254nm. The DNA presence shows visible fluorescent bands. Take pictures and save them in the gel imaging system.
+[46][Normal] -Experimental results：
+[47][Normal] The DNA marker bands are clearly visible and their sizes are in accordance with expectations.
+[48][Normal] The PCR products of the DNA samples to be tested mostly show bright bands, but some samples have additional bands. After analysis, it is possible that the samples were contaminated during the process of adding primers in the PCR experiment, or it could be due to improper use of the pipette gun when adding the samples, or insufficient operational standards.
+[50][Normal] -Experimental Conclusion:
+[51][Normal] This experiment successfully separated and detected DNA fragments through agarose gel electrophoresis, confirming the expected size of the PCR products. The electrophoresis process is an important method for DNA analysis in molecular biology.
+[56][Normal] -Preparation of LB Liquid Medium and High-Pressure Steam Sterilization  
+[58][Normal] -Experimental Instruments 
+[59][Normal] Electronic balance, measuring cylinder, conical flask, high-pressure steam sterilizer, pipette  
+[60][Normal] 10g Tryptone, 5g Yeast Extract, 5g NaCl, deionized water  
+[62][Normal] -Experimental Principle  
+[63][Normal] LB (Luria-Bertani) medium is a commonly used bacterial culture solution that provides essential nutrients such as carbon sources, nitrogen sources, vitamins, and inorganic salts for microorganisms like E. coli. The liquid prepared in this experiment can also serve as the base for solid LB medium.  
+[65][Normal] -Experimental Procedure 
+[66][Normal] 1. Measure the solvent: Use a measuring cylinder to measure 950 mL of deionized water and pour it into a 1 L conical flask.  
+[67][Normal] 2. Add pre-mixed LB powder: Weigh LB powder (containing 10g Tryptone + 5g Yeast Extract + 10g NaCl) and add it to the water.  
+[68][Normal] 3. Dissolution: Shake the container to fully dissolve the powder in the water (the solution should appear light yellow and transparent).  
+[69][Normal] 4. High-pressure steam sterilization:  
+[70][Normal]    (1) Cover the conical flask containing the prepared LB medium with aluminum foil or breathable sealing film.  
+[71][Normal]    (2) Sterilization settings: Place the medium in the high-pressure sterilizer and set it to 115°C for 21 minutes.  
+[72][Normal]    (3) Cooling: After sterilization, wait until the pressure drops to 0, then remove the medium and allow it to cool at room temperature.  
+[73][Normal]    (4) Storage: The sterilized LB medium can be stored at 4°C for about one month, but contamination should be checked before use.  
+[75][Normal] -Experimental Conclusion 
+[76][Normal] 1. The LB medium was successfully prepared, with all components fully dissolved and the pH suitable.  
+[77][Normal] 2. After high-pressure steam sterilization, the medium achieved a sterile state.  
+[78][Normal] 3. It was preserved under sealed conditions.
+[83][Normal] 7.16 Jel DNA Extraction Experiment 
+[84][Normal] -Experimental Objective：
+[85][Normal] To master the operation of micropipettes and the extraction of plasmid DNA.
+[87][Normal] -Experimental Principle：
+[88][Normal] The separation and recovery of DNA fragments is a crucial technique in genetic engineering operations. The two most critical technical indicators in recovery experiments are the purity and recovery yield of the product: insufficient purity severely impacts subsequent enzyme-involved reactions such as restriction digestion, ligation, and labeling; unsatisfactory recovery yield often significantly increases preliminary workloads.
+[89][Normal] DNA Gel Extraction Kit Principle:
+[90][Normal] This experiment utilizes a DNA gel extraction kit. Its principle is: the gel slice rapidly melts in the gel melting solution, releasing the DNA. Under high-salt conditions, the purification resin specifically adsorbs DNA; under low-salt or aqueous conditions, the DNA is eluted.
+[91][Normal] Kit Capabilities:
+[92][Normal] This system can recover various types of high-purity DNA fragments from standard agarose gels, suitable for fragments ranging from 150 bp to over 10 kb. It is used for DNA sequencing and other enzymatic reactions, with a recovery yield of approximately 70%.
+[93][Normal] GibsonAssemblyPrinciple:
+[94][Normal] Performing Gibson assembly first requires obtaining DNA fragments with homologous ends, typically acquired via PCR. These fragments are then co-incubated with an enzyme master mix to complete the assembly. This master mix contains three distinct enzymes.
+[96][Normal] -Equipment &Instruments：
+[97][Normal] Equipment: Benchtop centrifuge, Micropipettes, Pipette tips, 1.5 ml centrifuge tubes, Collection tubes, Spin columns, Nanodrop spectrophotometer.
+[99][Normal] Reagents：
+[100][Normal] *   100 µL Binding Buffer
+[101][Normal] *   PN Buffer
+[102][Normal] *   600 µL Wash Solution (PW)
+[103][Normal] *   Elution Buffer or ddH₂O
+[104][Normal] *   T5 Exonuclease
+[105][Normal] *   Phusion DNA Polymerase
+[106][Normal] *   Taq DNA Ligase
+[108][Normal] -Experimental Procedure：
+[109][Normal] 1.  Incubate the gel mixture at 50-60°C for 10 minutes or until the gel slice is completely dissolved. Invert and mix the tube every few minutes to aid dissolution. Ensure complete dissolution. Check the solution color: yellowindicates the DNA is at the optimal pH.
+[110][Normal] 2.  Transfer up to 800 µL of the gel solution (from step 1) to the spin column. Let stand for 2 minutes. Centrifuge at 10,000 rpm (~10,000 × g) for 1 minute. Discard the flow-through and place the spin column back into the same collection tube.
+[111][Normal] 3.  Add 600 µL Wash Solution (PW) to the spin column. Centrifuge at 10,000 rpm (~10,000 × g) for 1 minute. Discard the flow-through and place the spin column back into the same collection tube.
+[112][Normal] 4.  Repeat step 3 once.
+[113][Normal] 5.  Place the empty spin column and collection tube into the centrifuge. Centrifuge at 12,000 rpm (~12,000 × g) for 2 minutes to completely remove residual wash solution. Ethanol residue will inhibit downstream enzymatic reactions.
+[114][Normal] 6.  Transfer the spin column to a new 1.5 ml centrifuge tube. Let stand for several minutes to allow complete evaporation of ethanol.
+[115][Normal] 7.  Add 30 µL of Elution Buffer or ddH₂O (pre-warmed to 55-60°C) to the center of the spin column membrane. Let stand at room temperature for 1-2 minutes. Centrifuge at 8,000 rpm (~8,000 × g) for 1 minute. Store the resulting DNA solution at -20°C or use it for subsequent experiments.
+[116][Normal] 8.  Measure DNA concentration (e.g., using Nanodrop).
+[117][Normal] 9.  Assemble DNA fragments (presumably referring to Gibson assembly preparation).
+[122][Normal] 7.17 Construction and Transformation of Recombinant Strains  
+[124][Normal] -Experimental Objective
+[125][Normal] To introduce exogenous naked DNA directly into cells for replication, proliferation, and expression.  
+[127][Normal] -Experimental Principle
+[128][Normal] In a low-osmolarity calcium chloride solution at 0°C, bacterial cells swell into spherical shapes, losing some membrane proteins, which increases cell membrane permeability. Calcium ions and plasmid DNA form a hydroxyl-calcium phosphate complex that is resistant to degradation by DNase. This complex readily adheres to the bacterial cell surface, enhancing the likelihood of cellular uptake.  
+[130][Normal] -Equipment and Materials
+[131][Normal] Equipment: Micropipette, pipette tips, 1.5 mL centrifuge tubes, benchtop centrifuge, water bath, culture medium, spreader.  
+[132][Normal] Materials: Gibson assembly ligation product from the previous experiment.  
+[134][Normal] -Reagents
+[135][Normal] Antibiotic-free sterile medium (2YT or LB).  
+[137][Normal] -Experimental Procedure
+[138][Normal] 1. Thawing Competent Cells: Remove BL21(DE3) competent cells from -80°C and immediately place them on ice. After 5 minutes, once the cell pellet has thawed, add the target plasmid and mix gently by flicking the bottom of the EP tube (avoid pipetting up and down). Keep on ice for 25 minutes.  
+[139][Normal] 2. Heat Shock:Transfer the tube to a 42°C water bath for 45 seconds, then immediately return it to ice and incubate for 2 minutes. Avoid agitation, as it may reduce transformation efficiency.  
+[140][Normal] 3. Recovery: Add 700 μL of antibiotic-free sterile medium (2YT or LB) to the tube, mix well, and incubate at 37°C with shaking at 200 rpm for 60 minutes.  
+[141][Normal] 4. Centrifugation and Plating: Centrifuge at 5000 rpm for 1 minute to pellet the cells. Discard most of the supernatant, leaving ~100 μL to gently resuspend the pellet. Spread the suspension onto 2YT or LB medium containing the appropriate antibiotic.  
+[145][Normal] 5. Incubation:Invert the plate and incubate overnight at 37°C.  
+[147][Normal] -Experimntal Precautions
+[148][Normal] The durations of heat shock and ice incubation must be precisely controlled, with rapid transition between the two steps.  
+[149][Normal] Avoid excessive force when flicking the EP tube, as it may cause bacterial cell death.  
+[151][Normal] -Experimental Results
+[152][Normal] Precipitate formation was observed in the centrifuged bacterial culture.
+[154][Normal] 7.18 PCR
+[155][Normal] -Experimental objective:
+[156][Normal] Verify whether the plasmid has been transformed into Escherichia coli
+[158][Normal] -Experimental methods: 
+[159][Normal] PCR technology, alkaline lysis method
+[161][Normal] -Experimental principle:
+[162][Normal] PCR is a technique for amplifying specific DNA fragments in vitro, based on the semi preserved replication mechanism of DNA. The specific process includes a cycle of the following three steps:
+[163][Normal] Denaturation: Heat the reaction system to 90-95 ℃ to dissociate double stranded DNA into single stranded templates. ‌‌
+[164][Normal] Annealing: When the temperature drops to 50-65 ℃, the primer specifically binds to the complementary sequence of the template DNA single strand. ‌‌
+[165][Normal] Extension: At 72 ℃, DNA polymerase (such as Taq enzyme) synthesizes new chains along the template using dNTP as raw material.
+[166][Normal] Principle of extracting plasmid DNA by alkaline lysis method:
+[167][Normal] Firstly, under alkaline conditions with a pH value of up to 12.6:
+[168][Normal] The hydrogen bonds of chromosomal DNA break, causing the double helix structure to unwind and denature;
+[169][Normal] Most of the hydrogen bonds in plasmid DNA are also broken, but the two complementary chains of the supercoiled covalently closed loop will not completely separate
+[170][Normal] When pH 4.8 NaAc/KAc high salt buffer is used to adjust its pH value to neutral, the denatured plasmid DNA returns to its original configuration and is stored in the solution;
+[171][Normal] Chromosomal DNA cannot undergo refolding and forms a tangled network structure. Through centrifugation, chromosomal DNA precipitates together with unstable macromolecules such as RNA and protein SDS complexes, and is removed.
+[173][Normal] -Experimental steps:
+[174][Normal] PCR technology process
+[177][Normal] 1. Add 3 microliters of water, 5 microliters of enzyme mix, 1 microliter of forward prime, and 1 microliter of reverse prime to two EP tubes.
+[178][Normal] 2. Use a pipette tip to collect bacteria 1 and 2 cultured in a culture dish, and add them to EP tubes 1 and 2, respectively.
+[179][Normal] 3. Use PCR technology:
+[180][Normal] Initial Denaturation: Heat the reaction system to 98 ℃ and maintain for 30 seconds
+[181][Normal] Denaturation: Maintain the reaction system at 98 ℃ for 10 seconds to dissociate double stranded DNA into single stranded templates. ‌‌
+[182][Normal] Annealing: The temperature is lowered to 60 ℃ and maintained for 5 seconds, and the primer specifically binds to the complementary sequence of the template DNA single strand. ‌‌
+[183][Normal] Extension: Raise the temperature to 72 ℃ and maintain it for 40 seconds. DNA polymerase (such as Taq enzyme) uses dNTP as raw material to synthesize new chains along the template.
+[184][Normal] Repeat the Initial Densification Annexing Extension steps 34 times
+[185][Normal] Final extension - maintaining 1 point at 72 ℃
+[186][Normal] 4. Pipette 10 μ L of PCR products into agarose gel with a pipette gun, and conduct electrophoresis for 30 min.
+[187][Normal] Alkali cracking process
+[188][Normal] 1. Add 100 microliters of pUC57 NorsZ to the EP tube and centrifuge for 1 minute
+[189][Normal] 2.Ressuspend Cells, Lyse and Neutralize 
+[190][Normal] Add to the pelleted cells.
+[191][Normal] 250 microliters of Resuscitation Solution and Vortex. P1
+[192][Normal] 250 microliters of Lysis Solution and invest the tube 4-6 times. P2
+[193][Normal] 350μL of Neutralization Solution and invert the tube 4-6 times.N3 Centrifuge 5 minutes.
+[194][Normal] 3.Bind DNA 
+[195][Normal] Transfer the supernatant to the Thermo Scientific GeneJET Spin Column. Centrifuge 1 minute.
+[196][Normal] 4.Wash the column
+[197][Normal] Add 500 microliters of Wash Solution and centralization for 45sx2times. Discard the flow through
+[198][Normal] Centrifuge empty column for 1 minute.
+[199][Normal] 5.Elute purified DNA
+[200][Normal] Transfer the column into a new tube. Add 30 microliters of H2O to the column and incubate 2 minutes. Centrifuge 2 minutes. Collect the flow-through.
+
+=== TABLES ===
