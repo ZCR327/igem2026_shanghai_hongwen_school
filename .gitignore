@@ -1,0 +1,28 @@
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Arduino 临时文件
+program/
+*.mpcode
+*.HMI
+*.zi
+控制面板.mcode
+控制面板.HMI
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.egg-info/
+.pytest_cache/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# 测试 / 临时
+test.*
+*.log
