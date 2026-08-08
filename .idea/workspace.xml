@@ -7,8 +7,12 @@
     <option name="selectedModelId" value="auto" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="1d498c22-3370-457e-a30d-2130faffa5a0" name="更改" comment="Add BrewXOS modeling + assembly code with CAD designs">
+    <list default="true" id="1d498c22-3370-457e-a30d-2130faffa5a0" name="更改" comment="add .gitignore">
+      <change afterPath="$PROJECT_DIR$/program/program.ino" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/arduino/brewXOS_sensor_logger.ino" beforeDir="false" afterPath="$PROJECT_DIR$/arduino/brewXOS_sensor_logger.ino" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/day2_enzyme_hydrolysis.py" beforeDir="false" afterPath="$PROJECT_DIR$/day2_enzyme_hydrolysis.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/day2_serial_fit.py" beforeDir="false" afterPath="$PROJECT_DIR$/day2_serial_fit.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -211,7 +215,23 @@
       <option name="project" value="LOCAL" />
       <updated>1785814562876</updated>
     </task>
-    <option name="localTasksCounter" value="7" />
+    <task id="LOCAL-00007" summary="add .gitignore">
+      <option name="closed" value="true" />
+      <created>1786172124650</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1786172124650</updated>
+    </task>
+    <task id="LOCAL-00008" summary="add .gitignore">
+      <option name="closed" value="true" />
+      <created>1786172190840</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1786172190840</updated>
+    </task>
+    <option name="localTasksCounter" value="9" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -239,6 +259,7 @@
     <MESSAGE value="Add initial model design tailored to our&#10;requirements" />
     <MESSAGE value="Update hardware recommendations: DFRduino Mega2560 as primary controller" />
     <MESSAGE value="Add BrewXOS modeling + assembly code with CAD designs" />
-    <option name="LAST_COMMIT_MESSAGE" value="Add BrewXOS modeling + assembly code with CAD designs" />
+    <MESSAGE value="add .gitignore" />
+    <option name="LAST_COMMIT_MESSAGE" value="add .gitignore" />
   </component>
 </project>

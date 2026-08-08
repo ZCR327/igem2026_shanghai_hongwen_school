@@ -210,3 +210,4 @@ if __name__ == '__main__':
     print("\n" + "=" * 60)
     print("Day 2 complete! Next: Day 3 - BSG pretreatment ODE + Arrhenius")
     print("=" * 60)
+
