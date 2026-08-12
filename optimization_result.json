@@ -1,0 +1,15 @@
+{
+  "Kp": 3,
+  "Ki": 0.05,
+  "Kd": 0,
+  "T_set": 35,
+  "Vmax": 3.0,
+  "kLa": 80,
+  "X0": 0.1,
+  "S0": 15,
+  "peak_XOS": 14.419,
+  "temp_std": 0.559,
+  "min_pH": 6.95,
+  "min_DO": 0.0,
+  "improvement_pct": 56.3
+}
