@@ -1,0 +1,659 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<title>PID 温控原理 · 互动演示</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Outfit:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<style>
+:root {
+  --bg: #f7f5f0;
+  --card: #ffffff;
+  --line: #e9e3d6;
+  --line-soft: #f0ebde;
+  --text: #14171e;
+  --muted: #5a5f6e;
+  --subtle: #a8a59b;
+  --primary: #2f6f5e;
+  --primary-soft: rgba(47, 111, 94, 0.12);
+  --primary-border: rgba(47, 111, 94, 0.32);
+  --secondary: #c97b3f;
+  --secondary-soft: rgba(201, 123, 63, 0.13);
+  --secondary-border: rgba(201, 123, 63, 0.32);
+  --rose: #b06367;
+  --rose-soft: rgba(176, 99, 103, 0.13);
+  --navy: #1e293b;
+  --navy-soft: rgba(30, 41, 59, 0.08);
+  --gold: #d4a55a;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: 'Outfit', system-ui, -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.55;
+  font-size: 15px;
+  -webkit-font-smoothing: antialiased;
+  font-feature-settings: 'kern' 1;
+  background-image:
+    radial-gradient(ellipse 80% 50% at 15% 0%, rgba(47, 111, 94, 0.05), transparent 60%),
+    radial-gradient(ellipse 60% 50% at 85% 30%, rgba(201, 123, 63, 0.04), transparent 60%);
+}
+h1, h2, h3, h4 { font-family: 'DM Serif Display', Georgia, "Songti SC", serif; font-weight: 400; line-height: 1.15; letter-spacing: -0.005em; }
+h1 { font-size: 48px; }
+h2 { font-size: 28px; }
+h3 { font-size: 18px; }
+.mono { font-family: 'JetBrains Mono', monospace; font-variant-numeric: tabular-nums; }
+.text-muted { color: var(--muted); }
+.text-subtle { color: var(--subtle); }
+.container { max-width: 1240px; margin: 0 auto; padding: 0 32px; }
+section { padding: 48px 0; }
+
+/* Hero */
+.hero { padding: 72px 0 32px; }
+.hero-tag {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  color: var(--primary);
+  margin-bottom: 14px;
+  display: flex; align-items: center; gap: 10px;
+}
+.hero-tag::before { content: ''; display: inline-block; width: 28px; height: 1px; background: var(--primary); }
+.hero h1 { margin-bottom: 14px; }
+.hero-sub { font-size: 16px; color: var(--muted); max-width: 60ch; }
+.hero-meta { font-family: 'JetBrains Mono', monospace; font-size: 12px; color: var(--subtle); margin-top: 12px; }
+
+.sec-head { display: flex; align-items: baseline; gap: 14px; margin-bottom: 20px; }
+.sec-head h2 { color: var(--text); }
+.sec-head .sec-tag {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  color: var(--primary);
+  padding-bottom: 4px;
+}
+.sec-sub { color: var(--muted); margin-bottom: 24px; max-width: 70ch; font-size: 14px; }
+
+/* Static comparison cards */
+.compare-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+}
+.compare-card {
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+}
+.compare-head { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 12px; }
+.compare-title { font-family: 'DM Serif Display', serif; font-size: 22px; }
+.compare-tag {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  padding: 3px 8px;
+  border-radius: 3px;
+}
+.tag-p { background: var(--primary-soft); color: var(--primary); border: 1px solid var(--primary-border); }
+.tag-pi { background: var(--secondary-soft); color: var(--secondary); border: 1px solid var(--secondary-border); }
+.tag-pid { background: var(--navy-soft); color: var(--navy); border: 1px solid var(--line); }
+.k-pills { display: flex; gap: 6px; margin-bottom: 14px; flex-wrap: wrap; }
+.k-pill {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  padding: 3px 8px;
+  border-radius: 4px;
+  background: var(--bg);
+  color: var(--text);
+  border: 1px solid var(--line);
+}
+.k-pill strong { color: var(--primary); margin-right: 4px; }
+.chart-wrap { height: 200px; margin-bottom: 14px; position: relative; }
+.compare-verdict {
+  font-size: 13px;
+  color: var(--muted);
+  line-height: 1.5;
+  padding-top: 12px;
+  border-top: 1px dashed var(--line);
+}
+.compare-verdict .metric { display: block; margin-top: 4px; }
+.compare-verdict .metric strong { color: var(--text); font-weight: 500; }
+.compare-verdict .verdict { display: block; margin-top: 8px; font-style: italic; color: var(--text); }
+
+/* Interactive simulator */
+.sim {
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  padding: 28px;
+  margin-top: 32px;
+}
+.sim-head { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 18px; }
+.sim-head h3 { font-family: 'DM Serif Display', serif; font-size: 22px; }
+.sim-head .hint { font-size: 12px; color: var(--muted); font-family: 'JetBrains Mono', monospace; }
+.sim-body { display: grid; grid-template-columns: 320px 1fr; gap: 24px; }
+.sim-controls { display: flex; flex-direction: column; gap: 18px; }
+.knob { background: var(--bg); border: 1px solid var(--line); border-radius: 10px; padding: 14px 16px; }
+.knob-head { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 8px; }
+.knob-label { font-size: 13px; color: var(--text); font-weight: 500; }
+.knob-label small { color: var(--subtle); font-weight: 400; margin-left: 4px; }
+.knob-val { font-family: 'JetBrains Mono', monospace; font-size: 16px; color: var(--primary); font-weight: 600; }
+.knob input[type=range] {
+  width: 100%;
+  height: 4px;
+  -webkit-appearance: none;
+  appearance: none;
+  background: var(--line);
+  border-radius: 2px;
+  outline: none;
+}
+.knob input[type=range]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 16px;
+  height: 16px;
+  background: var(--primary);
+  border-radius: 50%;
+  cursor: pointer;
+  border: 2px solid white;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+}
+.knob input[type=range]::-moz-range-thumb {
+  width: 16px;
+  height: 16px;
+  background: var(--primary);
+  border-radius: 50%;
+  cursor: pointer;
+  border: 2px solid white;
+}
+.knob .knob-meta { display: flex; justify-content: space-between; margin-top: 4px; font-size: 10px; color: var(--subtle); font-family: 'JetBrains Mono', monospace; }
+
+.btn-row { display: flex; gap: 8px; margin-top: 4px; }
+.btn {
+  flex: 1;
+  padding: 8px 12px;
+  background: var(--bg);
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  font-size: 12px;
+  font-family: 'JetBrains Mono', monospace;
+  cursor: pointer;
+  color: var(--text);
+  transition: all 0.15s;
+}
+.btn:hover { background: var(--primary-soft); border-color: var(--primary-border); color: var(--primary); }
+.btn.primary { background: var(--primary); color: white; border-color: var(--primary); }
+.btn.primary:hover { background: #245547; }
+
+.sim-chart-wrap { position: relative; height: 320px; }
+.sim-metrics {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+  margin-top: 16px;
+}
+.metric-box {
+  background: var(--bg);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 10px 14px;
+}
+.metric-box .label { font-size: 10px; text-transform: uppercase; letter-spacing: 0.1em; color: var(--subtle); margin-bottom: 4px; }
+.metric-box .val { font-family: 'DM Serif Display', serif; font-size: 22px; color: var(--text); line-height: 1; }
+.metric-box .unit { font-size: 12px; color: var(--muted); margin-left: 3px; font-family: 'Outfit', sans-serif; }
+.metric-box.good .val { color: var(--primary); }
+.metric-box.warn .val { color: var(--secondary); }
+.metric-box.bad .val { color: var(--rose); }
+
+/* Footer */
+.foot {
+  text-align: center;
+  padding: 56px 0 40px;
+  color: var(--subtle);
+  font-size: 12px;
+  font-family: 'JetBrains Mono', monospace;
+  letter-spacing: 0.05em;
+}
+.foot strong { color: var(--text); font-weight: 500; }
+
+/* Responsive */
+@media (max-width: 900px) {
+  h1 { font-size: 36px; }
+  .compare-grid, .sim-body { grid-template-columns: 1fr; }
+  .sim-metrics { grid-template-columns: repeat(2, 1fr); }
+  section { padding: 36px 0; }
+  .container { padding: 0 20px; }
+}
+</style>
+</head>
+<body>
+
+<div class="container">
+
+  <!-- ============ HERO ============ -->
+  <header class="hero">
+    <div class="hero-tag">PID 温控 · 互动演示</div>
+    <h1>P = 现在 · I = 过去 · D = 未来</h1>
+    <p class="hero-sub">Bacillus @ 37°C 发酵罐的 PID 控温原理。3 个 K 组合对比 + 实时滑块模拟器，3 秒看明白。</p>
+    <div class="hero-meta">// setpoint 37°C  //  ambient 25°C  //  thermal_mass 100 J/°C  //  max_heater 50 W</div>
+  </header>
+
+  <!-- ============ 3 STATIC COMPARISONS ============ -->
+  <section>
+    <div class="sec-head">
+      <span class="sec-tag">01 — 三种 K 组合</span>
+      <h2>同样的 37°C 目标，三种结局</h2>
+    </div>
+    <p class="sec-sub">P 单独用 = 永远差一点。P+I = 准了但冲过头。P+I+D = 又快又稳。这就是为什么工业控制全用 PID。</p>
+
+    <div class="compare-grid">
+      <!-- P only -->
+      <div class="compare-card">
+        <div class="compare-head">
+          <div class="compare-title">P only</div>
+          <div class="compare-tag tag-p">差 0.4°C</div>
+        </div>
+        <div class="k-pills">
+          <span class="k-pill"><strong>Kp</strong>30</span>
+          <span class="k-pill" style="opacity:0.4;"><strong>Ki</strong>0</span>
+          <span class="k-pill" style="opacity:0.4;"><strong>Kd</strong>0</span>
+        </div>
+        <div class="chart-wrap"><canvas id="chart-p"></canvas></div>
+        <div class="compare-verdict">
+          <span class="metric">上升时间：<strong>~3 min</strong></span>
+          <span class="metric">超调：<strong>0°C</strong></span>
+          <span class="metric">稳态误差：<strong>0.4°C</strong></span>
+          <span class="verdict">"用 P 单挑，永远到不了 37°C——停在 36.6°C。"</span>
+        </div>
+      </div>
+
+      <!-- P + I -->
+      <div class="compare-card">
+        <div class="compare-head">
+          <div class="compare-title">P + I</div>
+          <div class="compare-tag tag-pi">冲 38.4°C</div>
+        </div>
+        <div class="k-pills">
+          <span class="k-pill"><strong>Kp</strong>30</span>
+          <span class="k-pill"><strong>Ki</strong>2</span>
+          <span class="k-pill" style="opacity:0.4;"><strong>Kd</strong>0</span>
+        </div>
+        <div class="chart-wrap"><canvas id="chart-pi"></canvas></div>
+        <div class="compare-verdict">
+          <span class="metric">上升时间：<strong>~2 min</strong></span>
+          <span class="metric">超调：<strong>1.4°C（冲到 38.4°C）</strong></span>
+          <span class="metric">稳态误差：<strong>0°C（I 补到位）</strong></span>
+          <span class="verdict">"补过头了——I 攒了太多'欠的热'，一次性吐出来。"</span>
+        </div>
+      </div>
+
+      <!-- P + I + D -->
+      <div class="compare-card">
+        <div class="compare-head">
+          <div class="compare-title">P + I + D</div>
+          <div class="compare-tag tag-pid">完美</div>
+        </div>
+        <div class="k-pills">
+          <span class="k-pill"><strong>Kp</strong>30</span>
+          <span class="k-pill"><strong>Ki</strong>2</span>
+          <span class="k-pill"><strong>Kd</strong>80</span>
+        </div>
+        <div class="chart-wrap"><canvas id="chart-pid"></canvas></div>
+        <div class="compare-verdict">
+          <span class="metric">上升时间：<strong>~2.5 min</strong></span>
+          <span class="metric">超调：<strong>0.3°C（仅到 37.3°C）</strong></span>
+          <span class="metric">稳态误差：<strong>±0.05°C</strong></span>
+          <span class="verdict">"D 提前预判要冲过头，提前减功率——又快又稳。"</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ INTERACTIVE SIMULATOR ============ -->
+  <section>
+    <div class="sec-head">
+      <span class="sec-tag">02 — 拖滑块自己试</span>
+      <h2>实时模拟器</h2>
+    </div>
+    <p class="sec-sub">拖 Kp / Ki / Kd 滑块，曲线立刻变。把 Ki 拉到 0 看"差 0.4°C"那个效果；把 Kd 拉到 200 看输出抖。</p>
+
+    <div class="sim">
+      <div class="sim-head">
+        <h3>Bacillus 发酵罐 PID</h3>
+        <span class="hint">// 10 分钟实时模拟</span>
+      </div>
+
+      <div class="sim-body">
+        <div class="sim-controls">
+          <div class="knob">
+            <div class="knob-head">
+              <span class="knob-label">Kp <small>比例 / 现在</small></span>
+              <span class="knob-val" id="kp-val">30</span>
+            </div>
+            <input type="range" id="kp" min="0" max="100" value="30" step="1">
+            <div class="knob-meta"><span>0</span><span>50</span><span>100</span></div>
+          </div>
+
+          <div class="knob">
+            <div class="knob-head">
+              <span class="knob-label">Ki <small>积分 / 过去</small></span>
+              <span class="knob-val" id="ki-val">2.0</span>
+            </div>
+            <input type="range" id="ki" min="0" max="10" value="2" step="0.1">
+            <div class="knob-meta"><span>0</span><span>5</span><span>10</span></div>
+          </div>
+
+          <div class="knob">
+            <div class="knob-head">
+              <span class="knob-label">Kd <small>微分 / 未来</small></span>
+              <span class="knob-val" id="kd-val">80</span>
+            </div>
+            <input type="range" id="kd" min="0" max="300" value="80" step="1">
+            <div class="knob-meta"><span>0</span><span>150</span><span>300</span></div>
+          </div>
+
+          <div class="btn-row">
+            <button class="btn primary" id="btn-pid">经典 PID</button>
+            <button class="btn" id="btn-p">只 P</button>
+            <button class="btn" id="btn-pi">P+I</button>
+            <button class="btn" id="btn-rocket">火箭模式</button>
+          </div>
+        </div>
+
+        <div class="sim-chart-wrap">
+          <canvas id="chart-sim"></canvas>
+        </div>
+      </div>
+
+      <div class="sim-metrics">
+        <div class="metric-box" id="m-overshoot">
+          <div class="label">超调</div>
+          <div class="val"><span id="m-overshoot-val">0.3</span><span class="unit">°C</span></div>
+        </div>
+        <div class="metric-box" id="m-settling">
+          <div class="label">稳态时间</div>
+          <div class="val"><span id="m-settling-val">2.5</span><span class="unit">min</span></div>
+        </div>
+        <div class="metric-box" id="m-steady">
+          <div class="label">稳态误差</div>
+          <div class="val"><span id="m-steady-val">0.05</span><span class="unit">°C</span></div>
+        </div>
+        <div class="metric-box" id="m-oscillation">
+          <div class="label">震荡次数</div>
+          <div class="val"><span id="m-oscillation-val">0</span><span class="unit">次</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer class="foot">
+    PID 互动演示  ·  <strong>BrewXOS · iGEM 2026</strong>  ·  8.13 实机测试参考
+  </footer>
+
+</div>
+
+<script>
+// ============== PID SIMULATION CORE ==============
+function simulate(Kp, Ki, Kd, opts = {}) {
+  const setpoint = opts.setpoint ?? 37;
+  const T_init = opts.T_init ?? 25;
+  const T_amb = opts.T_amb ?? 25;
+  const maxHeater = opts.maxHeater ?? 50;
+  const heatLoss = opts.heatLoss ?? 0.5;
+  const thermalMass = opts.thermalMass ?? 100;
+  const dt = opts.dt ?? 1;
+  const steps = opts.steps ?? 600;
+
+  let T = T_init;
+  let integral = 0;
+  let lastError = setpoint - T;
+  const data = [{ t: 0, T: T }];
+  let maxT = T_init;
+  let zeroCrossings = 0;
+  let wasAbove = false;
+
+  for (let i = 1; i <= steps; i++) {
+    const error = setpoint - T;
+    integral += error * dt;
+    integral = Math.max(-200, Math.min(200, integral));
+    const derivative = (error - lastError) / dt;
+    lastError = error;
+
+    let output = Kp * error + Ki * integral + Kd * derivative;
+    output = Math.max(0, Math.min(255, output));
+
+    const heaterPower = (output / 255) * maxHeater;
+    const lossPower = heatLoss * (T - T_amb);
+    T = T + dt * (heaterPower - lossPower) / thermalMass;
+
+    if (T > maxT) maxT = T;
+    if (T > setpoint && !wasAbove) { zeroCrossings++; wasAbove = true; }
+    if (T < setpoint && wasAbove) { wasAbove = false; }
+
+    if (i % 5 === 0 || i === steps) {
+      data.push({ t: i, T: T });
+    }
+  }
+
+  // Compute metrics
+  const overshoot = Math.max(0, maxT - setpoint);
+  let settlingTime = 0;
+  for (let i = data.length - 1; i >= 0; i--) {
+    if (Math.abs(data[i].T - setpoint) > 0.5) {
+      settlingTime = data[i].t;
+      break;
+    }
+  }
+  const last5 = data.slice(-5);
+  const steadyErr = Math.abs(setpoint - last5.reduce((s, d) => s + d.T, 0) / last5.length);
+
+  return {
+    data,
+    metrics: {
+      overshoot: +overshoot.toFixed(2),
+      settling: +(settlingTime / 60).toFixed(1),
+      steady: +steadyErr.toFixed(2),
+      oscillation: zeroCrossings
+    }
+  };
+}
+
+// ============== CHART.JS DEFAULTS ==============
+Chart.defaults.font.family = "'Outfit', system-ui, sans-serif";
+Chart.defaults.font.size = 11;
+Chart.defaults.color = '#5a5f6e';
+Chart.defaults.borderColor = 'rgba(20, 23, 30, 0.06)';
+
+const setpointLine = (setpoint = 37) => ({
+  type: 'line',
+  borderColor: 'rgba(30, 41, 59, 0.4)',
+  borderWidth: 1.5,
+  borderDash: [6, 4],
+  pointRadius: 0,
+  data: Array(121).fill(null).map((_, i) => ({ x: i * 5, y: setpoint })),
+  label: 'Setpoint 37°C',
+  fill: false,
+  order: 99
+});
+
+const chartOptions = {
+  responsive: true,
+  maintainAspectRatio: false,
+  plugins: {
+    legend: { display: false },
+    tooltip: { enabled: false }
+  },
+  scales: {
+    x: {
+      type: 'linear',
+      min: 0,
+      max: 600,
+      title: { display: true, text: '时间 (秒)', font: { size: 10 } },
+      grid: { color: 'rgba(20, 23, 30, 0.04)' },
+      ticks: { font: { size: 10 } }
+    },
+    y: {
+      min: 24,
+      max: 40,
+      title: { display: true, text: '温度 (°C)', font: { size: 10 } },
+      grid: { color: 'rgba(20, 23, 30, 0.04)' },
+      ticks: { font: { size: 10 } }
+    }
+  },
+  animation: false
+};
+
+const simChartOptions = {
+  ...chartOptions,
+  plugins: {
+    legend: { display: false },
+    tooltip: {
+      enabled: true,
+      mode: 'index',
+      intersect: false,
+      callbacks: {
+        title: (ctx) => `${ctx[0].parsed.x}s`,
+        label: (ctx) => `${ctx.dataset.label}: ${ctx.parsed.y.toFixed(2)}°C`
+      }
+    }
+  }
+};
+
+// ============== 3 STATIC CHARTS ==============
+function buildStaticChart(canvasId, Kp, Ki, Kd, color) {
+  const sim = simulate(Kp, Ki, Kd);
+  const ctx = document.getElementById(canvasId);
+  new Chart(ctx, {
+    type: 'line',
+    data: {
+      datasets: [
+        {
+          label: '温度',
+          data: sim.data.map(d => ({ x: d.t, y: d.T })),
+          borderColor: color,
+          backgroundColor: color + '20',
+          borderWidth: 2,
+          pointRadius: 0,
+          tension: 0.3,
+          fill: true
+        },
+        setpointLine()
+      ]
+    },
+    options: chartOptions
+  });
+}
+
+buildStaticChart('chart-p', 30, 0, 0, '#2f6f5e');
+buildStaticChart('chart-pi', 30, 2, 0, '#c97b3f');
+buildStaticChart('chart-pid', 30, 2, 80, '#1e293b');
+
+// ============== INTERACTIVE SIMULATOR ==============
+const simCanvas = document.getElementById('chart-sim');
+let simChart = null;
+let lastSim = null;
+
+function renderSim(Kp, Ki, Kd) {
+  const sim = simulate(Kp, Ki, Kd);
+  lastSim = sim;
+
+  if (simChart) {
+    simChart.data.datasets[0].data = sim.data.map(d => ({ x: d.t, y: d.T }));
+    simChart.data.datasets[1] = setpointLine();
+    simChart.update('none');
+  } else {
+    simChart = new Chart(simCanvas, {
+      type: 'line',
+      data: {
+        datasets: [
+          {
+            label: '实际温度',
+            data: sim.data.map(d => ({ x: d.t, y: d.T })),
+            borderColor: '#2f6f5e',
+            backgroundColor: 'rgba(47, 111, 94, 0.12)',
+            borderWidth: 2.5,
+            pointRadius: 0,
+            tension: 0.3,
+            fill: true
+          },
+          setpointLine()
+        ]
+      },
+      options: simChartOptions
+    });
+  }
+
+  // Update metrics
+  const m = sim.metrics;
+  document.getElementById('m-overshoot-val').textContent = m.overshoot;
+  document.getElementById('m-settling-val').textContent = m.settling;
+  document.getElementById('m-steady-val').textContent = m.steady;
+  document.getElementById('m-oscillation-val').textContent = m.oscillation;
+
+  // Color code
+  const overshootBox = document.getElementById('m-overshoot');
+  overshootBox.classList.remove('good', 'warn', 'bad');
+  if (m.overshoot < 0.5) overshootBox.classList.add('good');
+  else if (m.overshoot < 1.5) overshootBox.classList.add('warn');
+  else overshootBox.classList.add('bad');
+
+  const steadyBox = document.getElementById('m-steady');
+  steadyBox.classList.remove('good', 'warn', 'bad');
+  if (m.steady < 0.1) steadyBox.classList.add('good');
+  else if (m.steady < 0.5) steadyBox.classList.add('warn');
+  else steadyBox.classList.add('bad');
+}
+
+// Slider controls
+const kpSlider = document.getElementById('kp');
+const kiSlider = document.getElementById('ki');
+const kdSlider = document.getElementById('kd');
+const kpVal = document.getElementById('kp-val');
+const kiVal = document.getElementById('ki-val');
+const kdVal = document.getElementById('kd-val');
+
+function updateSim() {
+  const Kp = +kpSlider.value;
+  const Ki = +kiSlider.value;
+  const Kd = +kdSlider.value;
+  kpVal.textContent = Kp;
+  kiVal.textContent = Ki.toFixed(1);
+  kdVal.textContent = Kd;
+  renderSim(Kp, Ki, Kd);
+}
+
+kpSlider.addEventListener('input', updateSim);
+kiSlider.addEventListener('input', updateSim);
+kdSlider.addEventListener('input', updateSim);
+
+// Preset buttons
+document.getElementById('btn-pid').addEventListener('click', () => {
+  kpSlider.value = 30; kiSlider.value = 2; kdSlider.value = 80; updateSim();
+});
+document.getElementById('btn-p').addEventListener('click', () => {
+  kpSlider.value = 30; kiSlider.value = 0; kdSlider.value = 0; updateSim();
+});
+document.getElementById('btn-pi').addEventListener('click', () => {
+  kpSlider.value = 30; kiSlider.value = 2; kdSlider.value = 0; updateSim();
+});
+document.getElementById('btn-rocket').addEventListener('click', () => {
+  kpSlider.value = 100; kiSlider.value = 10; kdSlider.value = 300; updateSim();
+});
+
+// Initial render
+updateSim();
+</script>
+
+</body>
+</html>

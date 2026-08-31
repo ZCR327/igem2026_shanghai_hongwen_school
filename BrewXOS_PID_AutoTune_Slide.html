@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<title>BrewXOS · PID Auto-Tuning Slide</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Outfit:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap');
+:root {
+  --bg: #f7f5f0;
+  --ink: #14171e;
+  --muted: #5a5f6e;
+  --subtle: #8b8a82;
+  --line: #e9e3d6;
+  --primary: #2f6f5e;
+  --secondary: #c97b3f;
+  --rose: #b06367;
+  --navy: #1e293b;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: 'Outfit', system-ui, sans-serif;
+  background: var(--bg);
+  color: var(--ink);
+  min-height: 100vh;
+  padding: 40px 24px;
+  background-image:
+    radial-gradient(ellipse 50% 40% at 10% 0%, rgba(47,111,94,0.04), transparent 70%),
+    radial-gradient(ellipse 50% 40% at 90% 100%, rgba(201,123,63,0.04), transparent 70%);
+}
+.slide {
+  max-width: 1280px;
+  margin: 0 auto;
+  background: white;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 48px 56px 40px;
+  box-shadow: 0 8px 32px -8px rgba(20, 23, 30, 0.06);
+  position: relative;
+}
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--subtle);
+  margin-bottom: 24px;
+}
+.brand-dot {
+  width: 6px; height: 6px; background: var(--primary);
+  border-radius: 50%;
+}
+h1 {
+  font-family: 'DM Serif Display', Georgia, serif;
+  font-size: 44px;
+  line-height: 1.05;
+  letter-spacing: -0.01em;
+  margin-bottom: 8px;
+  font-weight: 400;
+}
+.subtitle {
+  font-size: 15px;
+  color: var(--muted);
+  margin-bottom: 36px;
+}
+.subtitle strong { color: var(--ink); font-weight: 600; }
+
+.process {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  margin-bottom: 32px;
+}
+.stage {
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 18px 20px;
+  position: relative;
+  background: linear-gradient(180deg, #fdfcf8 0%, white 50%);
+}
+.stage-num {
+  position: absolute;
+  top: -10px;
+  left: 16px;
+  background: var(--primary);
+  color: white;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  padding: 3px 10px;
+  border-radius: 3px;
+}
+.stage-title {
+  font-size: 13px;
+  font-weight: 600;
+  margin: 8px 0 4px;
+  color: var(--ink);
+}
+.stage-sub {
+  font-size: 11px;
+  color: var(--muted);
+  font-family: 'JetBrains Mono', monospace;
+  margin-bottom: 10px;
+}
+.stage-detail {
+  font-size: 12px;
+  line-height: 1.55;
+  color: var(--muted);
+}
+.stage-detail strong {
+  color: var(--ink);
+  font-weight: 500;
+}
+.stage-formula {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  background: var(--bg);
+  border: 1px solid var(--line);
+  padding: 6px 10px;
+  border-radius: 4px;
+  margin-top: 8px;
+  color: var(--ink);
+}
+
+.grid-2 {
+  display: grid;
+  grid-template-columns: 1.4fr 1fr;
+  gap: 24px;
+  margin-bottom: 32px;
+}
+.section-title {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  color: var(--subtle);
+  margin-bottom: 14px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.section-title::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--line);
+}
+
+.formulas {
+  background: var(--bg);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 18px 20px;
+}
+.formula-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 10px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+}
+.formula-row:last-child { margin-bottom: 0; }
+.formula-label { color: var(--subtle); width: 60px; }
+.formula-eq { color: var(--ink); }
+.formula-eq em { font-style: italic; color: var(--primary); }
+
+.results-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12px;
+}
+.results-table thead th {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--subtle);
+  text-align: left;
+  padding: 8px 10px;
+  border-bottom: 1px solid var(--line);
+  font-weight: 500;
+}
+.results-table tbody td {
+  padding: 10px;
+  border-bottom: 1px solid var(--line-soft, #f0ebde);
+}
+.results-table .name { font-weight: 500; }
+.results-table .num {
+  font-family: 'JetBrains Mono', monospace;
+  color: var(--primary);
+  font-weight: 600;
+  text-align: right;
+}
+.results-table .note { font-size: 10px; color: var(--subtle); }
+.results-table tr.highlight { background: rgba(47,111,94,0.04); }
+.results-table tr.highlight .num { color: var(--secondary); }
+
+.igembox {
+  background: linear-gradient(135deg, var(--navy) 0%, #0f1e2e 100%);
+  color: white;
+  border-radius: 8px;
+  padding: 24px 28px;
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  gap: 24px;
+  align-items: center;
+}
+.medal {
+  font-family: 'DM Serif Display', serif;
+  font-size: 36px;
+  line-height: 1;
+  text-align: center;
+}
+.medal small { display: block; font-family: 'JetBrains Mono', monospace; font-size: 9px; letter-spacing: 0.2em; color: rgba(255,255,255,0.6); margin-top: 4px; font-weight: 400; }
+.igembox-msg { font-size: 13px; line-height: 1.55; }
+.igembox-msg strong { color: #ffd28e; font-weight: 600; }
+.igembox-msg em { font-style: normal; color: rgba(255,255,255,0.7); }
+.iimetal {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  text-align: right;
+  color: rgba(255,255,255,0.5);
+  letter-spacing: 0.1em;
+}
+
+.foot {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 32px;
+  padding-top: 16px;
+  border-top: 1px solid var(--line);
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  color: var(--subtle);
+  letter-spacing: 0.05em;
+}
+</style>
+</head>
+<body>
+
+<div class="slide">
+
+  <div class="brand">
+    <div class="brand-dot"></div>
+    BREWXOS · IGEM 2026 · HARDWARE / CONTROL
+  </div>
+
+  <h1>PID Auto-Tuning via<br>Relay Feedback Method</h1>
+  <p class="subtitle">
+    <strong>Åström-Hägglund 1984</strong> · Self-oscillation-based controller identification ·
+    Implemented on Arduino Mega2560 with 5V relay for 1L Bacillus fermentation
+  </p>
+
+  <!-- 3-stage process -->
+  <div class="process">
+    <div class="stage">
+      <div class="stage-num">01 · WARMUP</div>
+      <div class="stage-title">继电器 bang-bang 加热</div>
+      <div class="stage-sub">T &lt; 34.5°C → ON, T &gt; 35.5°C → OFF</div>
+      <div class="stage-detail">
+        <strong>滞回 d = 1.0°C</strong> 让系统跨越 35°C setpoint。
+        水浴 10-15 min 升温到 setpoint。
+      </div>
+    </div>
+
+    <div class="stage">
+      <div class="stage-num">02 · OSCILLATION</div>
+      <div class="stage-title">量自激振荡</div>
+      <div class="stage-sub">Skip 3 cycles · 测后 3+ cycles</div>
+      <div class="stage-detail">
+        系统自然振荡在 34.5 ↔ 35.5°C 之间。
+        量 <strong>周期 T_u</strong> 和 <strong>振幅 A</strong>。
+      </div>
+      <div class="stage-formula">T_u ≈ 140s, A ≈ 1.0°C</div>
+    </div>
+
+    <div class="stage">
+      <div class="stage-num">03 · CALCULATE</div>
+      <div class="stage-title">Z-N 公式出 PID</div>
+      <div class="stage-sub">Output 3 K-sets</div>
+      <div class="stage-detail">
+        算出 <strong>临界增益 K_u</strong>，套 Ziegler-Nichols 公式
+        给出 3 套 PID 参数。
+      </div>
+      <div class="stage-formula">K_u = 4d / (π·A) ≈ 1.27</div>
+    </div>
+  </div>
+
+  <!-- 2-col: formulas + results -->
+  <div class="grid-2">
+
+    <div>
+      <div class="section-title">理论 · DESCRIBING FUNCTION</div>
+      <div class="formulas">
+        <div class="formula-row">
+          <div class="formula-label">系统</div>
+          <div class="formula-eq">G(s) = K / (τs+1) · e<em>-Ls</em></div>
+        </div>
+        <div class="formula-row">
+          <div class="formula-label">继电器</div>
+          <div class="formula-eq">N(A) = 4d / (π·A)</div>
+        </div>
+        <div class="formula-row">
+          <div class="formula-label">自激</div>
+          <div class="formula-eq">1 + N(A)·G(jω) = 0 → 临界</div>
+        </div>
+        <div class="formula-row">
+          <div class="formula-label">K_u</div>
+          <div class="formula-eq">= 4d / (π·A)</div>
+        </div>
+        <div class="formula-row">
+          <div class="formula-label">Z-N</div>
+          <div class="formula-eq">K_p=0.6K_u, T_i=0.5T_u, T_d=0.125T_u</div>
+        </div>
+      </div>
+    </div>
+
+    <div>
+      <div class="section-title">3 套 PID 输出 · OUTPUT K-SETS</div>
+      <table class="results-table">
+        <thead>
+          <tr>
+            <th>方法</th>
+            <th style="text-align:right">K_p</th>
+            <th style="text-align:right">K_i</th>
+            <th style="text-align:right">K_d</th>
+            <th>特点</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="name">Z-N 经典</td>
+            <td class="num">0.76</td>
+            <td class="num">0.011</td>
+            <td class="num">13.4</td>
+            <td class="note">响应快 · 25% 超调</td>
+          </tr>
+          <tr class="highlight">
+            <td class="name">★ Tyreus-Luyben</td>
+            <td class="num">0.57</td>
+            <td class="num">0.0018</td>
+            <td class="num">10.3</td>
+            <td class="note">温度控制金标准</td>
+          </tr>
+          <tr>
+            <td class="name">IMC</td>
+            <td class="num">0.51</td>
+            <td class="num">0.0036</td>
+            <td class="num">17.0</td>
+            <td class="note">最保守 · 超慢但稳</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- iGEM medal callout -->
+  <div class="igembox">
+    <div class="medal">
+      ★<br><small>EXCELLENCE</small>
+    </div>
+    <div class="igembox-msg">
+      <strong>iGEM 银牌/金牌加分项</strong>：工业级自动调参（不需要手动试 K）+ 自激振荡法是控制论 1984 经典。<br>
+      <em>答辩话术：</em>"我们用 30 分钟、3 个无意识振荡周期，<strong>无人工调参</strong>，机器自动识别系统传递函数，输出 3 套 K 候选——比传统 Z-N 节省 90% 时间。"
+    </div>
+    <div class="iimetal">SILVER →<br>GOLD ↑</div>
+  </div>
+
+  <div class="foot">
+    <div>ZHAO Changrui · iGEM 2026 · Shanghai Hongwen School</div>
+    <div>8.13 答辩单页 · v1.0</div>
+  </div>
+
+</div>
+
+</body>
+</html>

@@ -1,0 +1,759 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<title>BrewXOS 发酵罐仿真 · 罐内混合物</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Outfit:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<style>
+:root {
+  --bg: #f7f5f0;
+  --card: #ffffff;
+  --line: #e9e3d6;
+  --line-soft: #f0ebde;
+  --text: #14171e;
+  --muted: #5a5f6e;
+  --subtle: #a8a59b;
+  --primary: #2f6f5e;
+  --primary-soft: rgba(47, 111, 94, 0.12);
+  --primary-border: rgba(47, 111, 94, 0.32);
+  --secondary: #c97b3f;
+  --secondary-soft: rgba(201, 123, 63, 0.13);
+  --secondary-border: rgba(201, 123, 63, 0.32);
+  --rose: #b06367;
+  --rose-soft: rgba(176, 99, 103, 0.13);
+  --rose-border: rgba(176, 99, 103, 0.30);
+  --navy: #1e293b;
+  --navy-soft: rgba(30, 41, 59, 0.08);
+  --gold: #d4a55a;
+  --gold-soft: rgba(212, 165, 90, 0.13);
+  --blue: #4a6fa5;
+  --blue-soft: rgba(74, 111, 165, 0.13);
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: 'Outfit', system-ui, -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.55;
+  font-size: 14px;
+  -webkit-font-smoothing: antialiased;
+  font-feature-settings: 'kern' 1;
+  background-image:
+    radial-gradient(ellipse 80% 50% at 15% 0%, rgba(47, 111, 94, 0.05), transparent 60%),
+    radial-gradient(ellipse 60% 50% at 85% 30%, rgba(201, 123, 63, 0.04), transparent 60%);
+}
+h1, h2, h3, h4 { font-family: 'DM Serif Display', Georgia, "Songti SC", serif; font-weight: 400; line-height: 1.15; letter-spacing: -0.005em; }
+h1 { font-size: 44px; }
+h2 { font-size: 26px; }
+h3 { font-size: 18px; }
+.mono { font-family: 'JetBrains Mono', monospace; font-variant-numeric: tabular-nums; }
+.text-muted { color: var(--muted); }
+.container { max-width: 1280px; margin: 0 auto; padding: 0 32px; }
+section { padding: 40px 0; }
+.sec-head { display: flex; align-items: baseline; gap: 14px; margin-bottom: 16px; }
+.sec-head h2 { color: var(--text); }
+.sec-head .sec-tag {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  color: var(--primary);
+}
+.sec-sub { color: var(--muted); margin-bottom: 20px; max-width: 75ch; font-size: 13px; }
+
+/* Hero */
+.hero { padding: 64px 0 24px; }
+.hero-tag {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  color: var(--primary);
+  margin-bottom: 14px;
+  display: flex; align-items: center; gap: 10px;
+}
+.hero-tag::before { content: ''; display: inline-block; width: 28px; height: 1px; background: var(--primary); }
+.hero h1 { margin-bottom: 12px; }
+.hero-sub { font-size: 15px; color: var(--muted); max-width: 65ch; margin-bottom: 8px; }
+.hero-meta { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--subtle); }
+
+/* Charts grid */
+.charts-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+}
+.chart-card {
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 18px;
+}
+.chart-head { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 8px; }
+.chart-title { font-size: 13px; font-weight: 500; }
+.chart-unit { font-size: 11px; color: var(--muted); font-family: 'JetBrains Mono', monospace; }
+.chart-wrap { height: 140px; position: relative; }
+
+/* Control panel */
+.control-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+  margin-bottom: 16px;
+}
+.control-card {
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 22px;
+}
+.control-card h3 { font-family: 'DM Serif Display', serif; font-size: 20px; margin-bottom: 14px; }
+.knob-group { display: flex; flex-direction: column; gap: 14px; }
+.knob { display: grid; grid-template-columns: 110px 1fr 60px; gap: 10px; align-items: center; }
+.knob-label { font-size: 12px; color: var(--text); font-weight: 500; }
+.knob-label small { color: var(--subtle); font-weight: 400; font-size: 10px; display: block; }
+.knob input[type=range] {
+  width: 100%;
+  height: 4px;
+  -webkit-appearance: none;
+  appearance: none;
+  background: var(--line);
+  border-radius: 2px;
+  outline: none;
+}
+.knob input[type=range]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 14px; height: 14px;
+  background: var(--primary);
+  border-radius: 50%;
+  cursor: pointer;
+  border: 2px solid white;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+}
+.knob input[type=range]::-moz-range-thumb {
+  width: 14px; height: 14px;
+  background: var(--primary);
+  border-radius: 50%;
+  cursor: pointer;
+  border: 2px solid white;
+}
+.knob-val {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 13px;
+  color: var(--primary);
+  font-weight: 600;
+  text-align: right;
+}
+
+.btn-row { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 12px; }
+.btn {
+  flex: 1; min-width: 90px;
+  padding: 7px 10px;
+  background: var(--bg);
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  font-size: 11px;
+  font-family: 'JetBrains Mono', monospace;
+  cursor: pointer;
+  color: var(--text);
+  transition: all 0.15s;
+}
+.btn:hover { background: var(--primary-soft); border-color: var(--primary-border); color: var(--primary); }
+.btn.primary { background: var(--primary); color: white; border-color: var(--primary); }
+.btn.primary:hover { background: #245547; }
+
+/* Metrics */
+.metrics {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 12px;
+  margin-top: 16px;
+}
+.metric-card {
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 14px 16px;
+}
+.metric-card .label { font-size: 10px; text-transform: uppercase; letter-spacing: 0.1em; color: var(--subtle); margin-bottom: 4px; }
+.metric-card .val { font-family: 'DM Serif Display', serif; font-size: 24px; line-height: 1; color: var(--text); }
+.metric-card .val .unit { font-size: 11px; color: var(--muted); margin-left: 3px; font-family: 'Outfit'; }
+.metric-card.good .val { color: var(--primary); }
+.metric-card.warn .val { color: var(--secondary); }
+.metric-card.bad .val { color: var(--rose); }
+
+/* Model panel */
+.model-info {
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 22px;
+  font-size: 13px;
+  color: var(--muted);
+  line-height: 1.6;
+}
+.model-info h3 { font-family: 'DM Serif Display', serif; font-size: 20px; margin-bottom: 10px; color: var(--text); }
+.model-eq { background: var(--bg); padding: 10px 14px; border-radius: 6px; font-family: 'JetBrains Mono', monospace; font-size: 12px; margin: 8px 0; color: var(--text); border-left: 3px solid var(--primary); }
+.model-params { display: grid; grid-template-columns: 1fr 1fr; gap: 6px 16px; margin-top: 8px; font-size: 12px; }
+.model-params div { display: flex; justify-content: space-between; padding: 2px 0; }
+.model-params strong { color: var(--text); }
+
+.foot {
+  text-align: center;
+  padding: 48px 0 32px;
+  color: var(--subtle);
+  font-size: 11px;
+  font-family: 'JetBrains Mono', monospace;
+}
+
+@media (max-width: 900px) {
+  h1 { font-size: 32px; }
+  .charts-grid, .control-row, .metrics { grid-template-columns: 1fr 1fr; }
+  section { padding: 32px 0; }
+  .container { padding: 0 20px; }
+}
+</style>
+</head>
+<body>
+
+<div class="container">
+
+  <!-- HERO -->
+  <header class="hero">
+    <div class="hero-tag">BrewXOS 发酵罐仿真 · 罐内混合物</div>
+    <h1>BSG → 木聚糖 → XOS</h1>
+    <p class="hero-sub">Bacillus subtilis WB800 + 木聚糖酶 + 啤酒糟 (BSG) 在 1L 发酵罐中的耦合动力学。PID 控温 + kLa 控氧 + pH 漂移。</p>
+    <div class="hero-meta">// V=1L  //  T_opt=37°C  //  pH_opt=6.5  //  Bacillus WB800  //  木聚糖酶 50 U/g BSG</div>
+  </header>
+
+  <!-- MODEL INFO -->
+  <section>
+    <div class="model-info">
+      <h3>模型方程</h3>
+      <div class="model-eq">dX/dt = μ·X − kd·X  &nbsp;&nbsp;&nbsp; (菌体生长)</div>
+      <div class="model-eq">dS/dt = −μ·X / Yxs  &nbsp;&nbsp;&nbsp; (底物 xylan 消耗)</div>
+      <div class="model-eq">dP/dt = Vmax·S/(Km+S) − qp·X·P/(Kp+P)  &nbsp;&nbsp;&nbsp; (XOS: 酶水解 − 菌消耗)</div>
+      <div class="model-eq">dT/dt = (Q_heater + Q_bio − U·A·(T−T_amb)) / (m·Cp)  &nbsp;&nbsp;&nbsp; (能量平衡)</div>
+      <div class="model-eq">dpH/dt = −k_acid·X / buffer  &nbsp;&nbsp;&nbsp; (酸产生)</div>
+      <div class="model-eq">dDO/dt = kLa·(DO_sat − DO) − qO2·X  &nbsp;&nbsp;&nbsp; (氧平衡)</div>
+      <div class="model-params">
+        <div><span>μ_max</span><strong>0.50 /h</strong></div>
+        <div><span>Ks</span><strong>0.5 g/L</strong></div>
+        <div><span>Yxs</span><strong>0.45 g/g</strong></div>
+        <div><span>kd</span><strong>0.01 /h</strong></div>
+        <div><span>Vmax 酶</span><strong>1.5 g/L/h</strong></div>
+        <div><span>Km 酶</span><strong>0.5 g/L</strong></div>
+        <div><span>qp 消耗</span><strong>0.20 g/g/h</strong></div>
+        <div><span>Kp</span><strong>2.0 g/L</strong></div>
+        <div><span>qO2</span><strong>0.5 g/g/h</strong></div>
+        <div><span>kLa</span><strong>100 /h</strong></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 6 通道实时图表 -->
+  <section>
+    <div class="sec-head">
+      <span class="sec-tag">01 — 实时曲线</span>
+      <h2>6 通道状态变量</h2>
+    </div>
+    <p class="sec-sub">48h 发酵全过程：菌体增长 → 底物消耗 → XOS 积累 → 温度 PID 跟踪 → pH 漂移 → DO 走势</p>
+
+    <div class="charts-grid">
+      <div class="chart-card">
+        <div class="chart-head">
+          <div class="chart-title">菌体浓度 X</div>
+          <div class="chart-unit">g/L</div>
+        </div>
+        <div class="chart-wrap"><canvas id="chart-x"></canvas></div>
+      </div>
+
+      <div class="chart-card">
+        <div class="chart-head">
+          <div class="chart-title">底物 xylan S</div>
+          <div class="chart-unit">g/L</div>
+        </div>
+        <div class="chart-wrap"><canvas id="chart-s"></canvas></div>
+      </div>
+
+      <div class="chart-card">
+        <div class="chart-head">
+          <div class="chart-title" style="color:var(--primary)">★ XOS 产品 P</div>
+          <div class="chart-unit">g/L</div>
+        </div>
+        <div class="chart-wrap"><canvas id="chart-p"></canvas></div>
+      </div>
+
+      <div class="chart-card">
+        <div class="chart-head">
+          <div class="chart-title">温度 T（PID 控）</div>
+          <div class="chart-unit">°C</div>
+        </div>
+        <div class="chart-wrap"><canvas id="chart-t"></canvas></div>
+      </div>
+
+      <div class="chart-card">
+        <div class="chart-head">
+          <div class="chart-title">pH</div>
+          <div class="chart-unit">pH</div>
+        </div>
+        <div class="chart-wrap"><canvas id="chart-ph"></canvas></div>
+      </div>
+
+      <div class="chart-card">
+        <div class="chart-head">
+          <div class="chart-title">溶解氧 DO</div>
+          <div class="chart-unit">mg/L</div>
+        </div>
+        <div class="chart-wrap"><canvas id="chart-do"></canvas></div>
+      </div>
+    </div>
+
+    <div class="metrics">
+      <div class="metric-card good" id="m-final-xos">
+        <div class="label">最终 XOS 浓度</div>
+        <div class="val"><span id="v-xos">0.0</span><span class="unit">g/L</span></div>
+      </div>
+      <div class="metric-card" id="m-final-x">
+        <div class="label">最终菌体</div>
+        <div class="val"><span id="v-x">0.0</span><span class="unit">g/L</span></div>
+      </div>
+      <div class="metric-card" id="m-time-peak">
+        <div class="label">XOS 峰值时间</div>
+        <div class="val"><span id="v-tp">0</span><span class="unit">h</span></div>
+      </div>
+      <div class="metric-card" id="m-temp-stability">
+        <div class="label">温度稳定性</div>
+        <div class="val"><span id="v-ts">±0</span><span class="unit">°C</span></div>
+      </div>
+      <div class="metric-card" id="m-yield">
+        <div class="label">XOS 得率</div>
+        <div class="val"><span id="v-yield">0</span><span class="unit">%</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CONTROLS -->
+  <section>
+    <div class="sec-head">
+      <span class="sec-tag">02 — 互动控制</span>
+      <h2>拖滑块改变 K / 通气 / 接种</h2>
+    </div>
+    <p class="sec-sub">改完任意滑块 → 自动重新跑 48h 仿真 → 6 张图 + 5 个指标全部刷新</p>
+
+    <div class="control-row">
+      <div class="control-card">
+        <h3>PID 控温（你仿真的 K）</h3>
+        <div class="knob-group">
+          <div class="knob">
+            <div class="knob-label">Kp <small>比例</small></div>
+            <input type="range" id="kp" min="0" max="20" value="5" step="0.5">
+            <div class="knob-val" id="kp-val">5.0</div>
+          </div>
+          <div class="knob">
+            <div class="knob-label">Ki <small>积分</small></div>
+            <input type="range" id="ki" min="0" max="0.5" value="0.05" step="0.01">
+            <div class="knob-val" id="ki-val">0.05</div>
+          </div>
+          <div class="knob">
+            <div class="knob-label">Kd <small>微分</small></div>
+            <input type="range" id="kd" min="0" max="30" value="8" step="0.5">
+            <div class="knob-val" id="kd-val">8.0</div>
+          </div>
+          <div class="knob">
+            <div class="knob-label">Setpoint <small>目标温度</small></div>
+            <input type="range" id="sp" min="25" max="45" value="37" step="0.5">
+            <div class="knob-val" id="sp-val">37°C</div>
+          </div>
+        </div>
+        <div class="btn-row">
+          <button class="btn primary" id="btn-zhao">赵昶瑞版 (5/0.05/8)</button>
+          <button class="btn" id="btn-conservative">保守 (3/0.02/5)</button>
+          <button class="btn" id="btn-aggressive">激进 (10/0.1/15)</button>
+          <button class="btn" id="btn-no-temp">不控温 (对照)</button>
+        </div>
+      </div>
+
+      <div class="control-card">
+        <h3>发酵条件</h3>
+        <div class="knob-group">
+          <div class="knob">
+            <div class="knob-label">kLa <small>通气强度</small></div>
+            <input type="range" id="kla" min="10" max="300" value="100" step="10">
+            <div class="knob-val" id="kla-val">100</div>
+          </div>
+          <div class="knob">
+            <div class="knob-label">X₀ <small>接种量</small></div>
+            <input type="range" id="x0" min="0.01" max="2" value="0.1" step="0.05">
+            <div class="knob-val" id="x0-val">0.10</div>
+          </div>
+          <div class="knob">
+            <div class="knob-label">S₀ <small>初始 xylan</small></div>
+            <input type="range" id="s0" min="2" max="30" value="10" step="0.5">
+            <div class="knob-val" id="s0-val">10.0</div>
+          </div>
+          <div class="knob">
+            <div class="knob-label">酶活 <small>Vmax</small></div>
+            <input type="range" id="vmax" min="0.1" max="5" value="1.5" step="0.1">
+            <div class="knob-val" id="vmax-val">1.5</div>
+          </div>
+        </div>
+        <div class="btn-row">
+          <button class="btn primary" id="btn-standard">标准发酵</button>
+          <button class="btn" id="btn-lowo2">低通气 (kLa=30)</button>
+          <button class="btn" id="btn-hightemp">高温 40°C</button>
+          <button class="btn" id="btn-no-enzyme">无酶对照</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer class="foot">
+    BrewXOS 发酵罐仿真 · <strong>6 通道耦合 ODE 求解</strong> ·  RK4 dt=0.01h · 48h 默认时长
+  </footer>
+
+</div>
+
+<script>
+// ============================================================
+// BrewXOS 发酵罐耦合仿真引擎
+// 6 状态变量：X (菌), S (xylan), P (XOS), T (温度), pH, DO
+// RK4 数值积分，PID 控温
+// ============================================================
+const PARAMS = {
+  // 微生物
+  mu_max: 0.5,         // /h
+  Ks: 0.5,             // g/L
+  Yxs: 0.45,           // gX/gS
+  kd: 0.01,            // /h
+  // 酶
+  Vmax_enzyme: 1.5,    // g/L/h
+  Km_enzyme: 0.5,      // g/L
+  // XOS 消耗
+  qp: 0.2,             // gXOS/gX/h
+  Kp_xos: 2.0,         // g/L
+  // 氧
+  qO2: 0.5,            // gO2/gX/h
+  kLa: 100,            // /h
+  DO_sat: 7.5,         // mg/L
+  // 温度
+  V: 1.0,              // L
+  rho: 1000,           // g/L
+  Cp: 4.18,            // J/g/K
+  Q_heater_max: 50,    // W
+  U_A: 0.5,            // W/K
+  T_amb: 25,           // °C
+  T_opt: 37,           // °C
+  sigma_T: 8,          // 温度适应宽度
+  Q_bio_per_gX: 0.3,   // W/gX 代谢热
+  // pH
+  pH_opt: 6.5,
+  sigma_pH: 1.5,
+  pH_init: 7.0,
+  k_acid: 0.005,       // pH/h per gX/L
+  buffer: 1.0,         // 缓冲容量
+};
+
+const INIT = {
+  X: 0.1,              // g/L
+  S: 10,               // g/L
+  P: 0,                // g/L
+  T: 25,               // °C
+  pH: 7.0,
+  DO: 7.5,
+};
+
+const DURATION_H = 48;
+const DT = 0.01;
+const STEPS = DURATION_H / DT;
+
+// 状态：目标温度（setpoint），PID 参数
+const ctrl = {
+  T_set: 37,
+  Kp: 5,
+  Ki: 0.05,
+  Kd: 8,
+  Vmax_e: 1.5,  // 酶活
+  kLa: 100,
+  X0: 0.1,
+  S0: 10,
+};
+
+// PID 内部状态
+const pid = { integral: 0, prev_error: 0 };
+
+// 温度适应函数（高斯）
+function fT(T) {
+  return Math.exp(-Math.pow((T - PARAMS.T_opt) / PARAMS.sigma_T, 2));
+}
+function fpH(pH) {
+  return Math.exp(-Math.pow((pH - PARAMS.pH_opt) / PARAMS.sigma_pH, 2));
+}
+
+// Monod 增长率
+function mu(X, S, T, pH, DO) {
+  const mS = S / (PARAMS.Ks + S);
+  const mDO = DO / (0.05 + DO);
+  return PARAMS.mu_max * mS * mDO * fT(T) * fpH(pH);
+}
+
+// 导数函数：返回 [dX, dS, dP, dT, dpH, dDO]
+function deriv(y, t) {
+  const [X, S, P, T, pH, DO] = y;
+  const m = mu(X, S, T, pH, DO);
+
+  // 菌
+  const dX = m * X - PARAMS.kd * X;
+  // 底物（菌消耗）
+  const dS = -m * X / PARAMS.Yxs;
+  // XOS：酶水解 - 菌消耗
+  const enzymatic = ctrl.Vmax_e * S / (PARAMS.Km_enzyme + S);
+  const consumption = PARAMS.qp * X * P / (PARAMS.Kp_xos + P + 0.01);
+  const dP = enzymatic - consumption;
+  // 温度
+  const error = ctrl.T_set - T;
+  pid.integral += error * DT;
+  const alpha = 0.1;
+  const deriv_err = (error - pid.prev_error) / DT;
+  const deriv_filtered = alpha * deriv_err + (1 - alpha) * pid.prev_error;
+  pid.prev_error = error;
+  let output = ctrl.Kp * error + ctrl.Ki * pid.integral + ctrl.Kd * deriv_filtered;
+  output = Math.max(0, Math.min(1, output));
+  const Q_heater = output * PARAMS.Q_heater_max;
+  const Q_bio = PARAMS.Q_bio_per_gX * X * PARAMS.V;
+  const Q_loss = PARAMS.U_A * (T - PARAMS.T_amb);
+  const dT = (Q_heater + Q_bio - Q_loss) / (PARAMS.V * PARAMS.rho * PARAMS.Cp / 3600);  // K/h
+  // pH
+  const dpH = -PARAMS.k_acid * X / PARAMS.buffer;
+  // DO
+  const dDO = PARAMS.kLa * (PARAMS.DO_sat - DO) - PARAMS.qO2 * X;
+
+  return [dX, dS, dP, dT, dpH, dDO];
+}
+
+// RK4 一步
+function rk4Step(y, t) {
+  const k1 = deriv(y, t);
+  const y2 = y.map((v, i) => v + 0.5 * DT * k1[i]);
+  const k2 = deriv(y2, t + 0.5 * DT);
+  const y3 = y.map((v, i) => v + 0.5 * DT * k2[i]);
+  const k3 = deriv(y3, t + 0.5 * DT);
+  const y4 = y.map((v, i) => v + DT * k3[i]);
+  const k4 = deriv(y4, t + DT);
+  return y.map((v, i) => v + DT / 6 * (k1[i] + 2*k2[i] + 2*k3[i] + k4[i]));
+}
+
+// 跑完整仿真
+function runSimulation() {
+  pid.integral = 0;
+  pid.prev_error = 0;
+  const y0 = [
+    ctrl.X0,
+    ctrl.S0,
+    0,
+    25,
+    INIT.pH,
+    INIT.DO
+  ];
+  const data = { t: [], X: [], S: [], P: [], T: [], pH: [], DO: [] };
+  let y = y0.slice();
+  for (let i = 0; i < STEPS; i++) {
+    const t = i * DT;
+    y = rk4Step(y, t);
+    // 安全限幅
+    y[0] = Math.max(0, y[0]);
+    y[1] = Math.max(0, y[1]);
+    y[2] = Math.max(0, y[2]);
+    y[3] = Math.max(20, Math.min(50, y[3]));
+    y[4] = Math.max(4, Math.min(9, y[4]));
+    y[5] = Math.max(0, y[5]);
+    // 降采样到 0.1h
+    if (i % 10 === 0) {
+      data.t.push(t);
+      data.X.push(y[0]);
+      data.S.push(y[1]);
+      data.P.push(y[2]);
+      data.T.push(y[3]);
+      data.pH.push(y[4]);
+      data.DO.push(y[5]);
+    }
+  }
+  return data;
+}
+
+// ============================================================
+// Chart.js 初始化
+// ============================================================
+Chart.defaults.font.family = "'Outfit', system-ui, sans-serif";
+Chart.defaults.font.size = 10;
+Chart.defaults.color = '#5a5f6e';
+Chart.defaults.borderColor = 'rgba(20, 23, 30, 0.04)';
+
+const commonOpts = {
+  responsive: true,
+  maintainAspectRatio: false,
+  plugins: { legend: { display: false }, tooltip: { enabled: false } },
+  scales: {
+    x: {
+      type: 'linear',
+      min: 0, max: DURATION_H,
+      title: { display: true, text: '时间 (h)', font: { size: 9 }, color: '#a8a59b' },
+      grid: { color: 'rgba(20, 23, 30, 0.04)' },
+      ticks: { font: { size: 9 }, maxTicksLimit: 6 }
+    },
+    y: {
+      grid: { color: 'rgba(20, 23, 30, 0.04)' },
+      ticks: { font: { size: 9 }, maxTicksLimit: 5 }
+    }
+  },
+  animation: false,
+};
+
+function makeChart(id, color, yLabel, yMin, yMax) {
+  const ctx = document.getElementById(id);
+  return new Chart(ctx, {
+    type: 'line',
+    data: { datasets: [{
+      data: [],
+      borderColor: color,
+      backgroundColor: color + '20',
+      borderWidth: 1.8,
+      pointRadius: 0,
+      tension: 0.25,
+      fill: true
+    }]},
+    options: {
+      ...commonOpts,
+      scales: {
+        ...commonOpts.scales,
+        y: { ...commonOpts.scales.y, min: yMin, max: yMax, title: { display: true, text: yLabel, font: { size: 9 }, color: '#a8a59b' } }
+      }
+    }
+  });
+}
+
+const cX  = makeChart('chart-x',  '#2f6f5e', 'g/L', 0, 5);
+const cS  = makeChart('chart-s',  '#c97b3f', 'g/L', 0, 15);
+const cP  = makeChart('chart-p',  '#2f6f5e', 'g/L', 0, 12);
+const cT  = makeChart('chart-t',  '#b06367', '°C', 20, 45);
+const cpH = makeChart('chart-ph', '#4a6fa5', 'pH', 4, 8);
+const cDO = makeChart('chart-do', '#d4a55a', 'mg/L', 0, 8);
+
+// 在 T 图上画 setpoint
+cT.options.plugins.annotation = false;
+cT.update();
+
+// ============================================================
+// 主渲染循环
+// ============================================================
+function render() {
+  const data = runSimulation();
+  cX.data.datasets[0].data  = data.t.map((t, i) => ({ x: t, y: data.X[i] }));
+  cS.data.datasets[0].data  = data.t.map((t, i) => ({ x: t, y: data.S[i] }));
+  cP.data.datasets[0].data  = data.t.map((t, i) => ({ x: t, y: data.P[i] }));
+  cT.data.datasets[0].data  = data.t.map((t, i) => ({ x: t, y: data.T[i] }));
+  cpH.data.datasets[0].data = data.t.map((t, i) => ({ x: t, y: data.pH[i] }));
+  cDO.data.datasets[0].data = data.t.map((t, i) => ({ x: t, y: data.DO[i] }));
+  cX.update(); cS.update(); cP.update(); cT.update(); cpH.update(); cDO.update();
+
+  // 指标
+  const finalXos = data.P[data.P.length - 1];
+  const peakXos = Math.max(...data.P);
+  const peakIdx = data.P.indexOf(peakXos);
+  const peakTime = data.t[peakIdx];
+  const finalX = data.X[data.X.length - 1];
+  const temps = data.T;
+  const tempMean = temps.reduce((s, v) => s + v, 0) / temps.length;
+  const tempStd = Math.sqrt(temps.reduce((s, v) => s + (v - tempMean) ** 2, 0) / temps.length);
+  const yieldPct = (peakXos / ctrl.S0) * 100;
+
+  document.getElementById('v-xos').textContent = peakXos.toFixed(1);
+  document.getElementById('v-x').textContent = finalX.toFixed(1);
+  document.getElementById('v-tp').textContent = peakTime.toFixed(1);
+  document.getElementById('v-ts').textContent = '±' + tempStd.toFixed(2);
+  document.getElementById('v-yield').textContent = yieldPct.toFixed(0);
+
+  // 颜色
+  const tsCard = document.getElementById('m-temp-stability');
+  tsCard.classList.remove('good', 'warn', 'bad');
+  if (tempStd < 0.3) tsCard.classList.add('good');
+  else if (tempStd < 0.8) tsCard.classList.add('warn');
+  else tsCard.classList.add('bad');
+}
+
+// ============================================================
+// 控件
+// ============================================================
+const kpSlider = document.getElementById('kp');
+const kiSlider = document.getElementById('ki');
+const kdSlider = document.getElementById('kd');
+const spSlider = document.getElementById('sp');
+const klaSlider = document.getElementById('kla');
+const x0Slider = document.getElementById('x0');
+const s0Slider = document.getElementById('s0');
+const vmaxSlider = document.getElementById('vmax');
+
+function updateDisplay() {
+  document.getElementById('kp-val').textContent = (+kpSlider.value).toFixed(1);
+  document.getElementById('ki-val').textContent = (+kiSlider.value).toFixed(2);
+  document.getElementById('kd-val').textContent = (+kdSlider.value).toFixed(1);
+  document.getElementById('sp-val').textContent = (+spSlider.value).toFixed(0) + '°C';
+  document.getElementById('kla-val').textContent = (+klaSlider.value).toFixed(0);
+  document.getElementById('x0-val').textContent = (+x0Slider.value).toFixed(2);
+  document.getElementById('s0-val').textContent = (+s0Slider.value).toFixed(1);
+  document.getElementById('vmax-val').textContent = (+vmaxSlider.value).toFixed(1);
+}
+function updateSim() {
+  ctrl.Kp = +kpSlider.value;
+  ctrl.Ki = +kiSlider.value;
+  ctrl.Kd = +kdSlider.value;
+  ctrl.T_set = +spSlider.value;
+  ctrl.kLa = +klaSlider.value;
+  ctrl.X0 = +x0Slider.value;
+  ctrl.S0 = +s0Slider.value;
+  ctrl.Vmax_e = +vmaxSlider.value;
+  updateDisplay();
+  render();
+}
+
+[kpSlider, kiSlider, kdSlider, spSlider, klaSlider, x0Slider, s0Slider, vmaxSlider]
+  .forEach(s => s.addEventListener('input', updateSim));
+
+// 预设按钮
+document.getElementById('btn-zhao').onclick = () => {
+  kpSlider.value = 5; kiSlider.value = 0.05; kdSlider.value = 8; updateSim();
+};
+document.getElementById('btn-conservative').onclick = () => {
+  kpSlider.value = 3; kiSlider.value = 0.02; kdSlider.value = 5; updateSim();
+};
+document.getElementById('btn-aggressive').onclick = () => {
+  kpSlider.value = 10; kiSlider.value = 0.1; kdSlider.value = 15; updateSim();
+};
+document.getElementById('btn-no-temp').onclick = () => {
+  kpSlider.value = 0; kiSlider.value = 0; kdSlider.value = 0; updateSim();
+};
+document.getElementById('btn-standard').onclick = () => {
+  klaSlider.value = 100; x0Slider.value = 0.1; s0Slider.value = 10; vmaxSlider.value = 1.5; updateSim();
+};
+document.getElementById('btn-lowo2').onclick = () => {
+  klaSlider.value = 30; x0Slider.value = 0.1; s0Slider.value = 10; vmaxSlider.value = 1.5; updateSim();
+};
+document.getElementById('btn-hightemp').onclick = () => {
+  spSlider.value = 40; updateSim();
+};
+document.getElementById('btn-no-enzyme').onclick = () => {
+  vmaxSlider.value = 0.1; updateSim();
+};
+
+// 初始
+updateSim();
+</script>
+
+</body>
+</html>

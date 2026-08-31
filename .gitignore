@@ -12,6 +12,20 @@ program/
 控制面板.mcode
 控制面板.HMI
 
+# 3D 模型（二进制大文件，无版本控制价值）
+*.f3d
+*.step
+*.STEP
+
+# Word 文档（已沉淀到 wiki 或桌面 .md，docx 冗余）
+*.docx
+
+# OCR 临时输出
+ocr_*.json
+
+# 触控屏 HMI 临时备份目录
+新建文件夹/
+
 # Python
 __pycache__/
 *.pyc
