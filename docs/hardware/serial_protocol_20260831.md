@@ -53,7 +53,7 @@ USART HMI 触控屏 ↔ DFRduino Mega2560 通过 **Serial1 (TX/RX, 9600 baud)** 
 
 ## v0.1 协议（8.12 program_v3_1.ino，**已废弃**）
 
-来源：`arduino/program_v3_1.ino` (你 8.12 写的 Mind+ 转 C 版本)
+来源：`arduino/program_v3_1.ino` (8.12 写的 Mind+ 转 C 版本，**8.31 已同步到 v0.2**)
 
 | 字符 | 动作 | 引脚 |
 |------|------|------|
@@ -67,17 +67,23 @@ USART HMI 触控屏 ↔ DFRduino Mega2560 通过 **Serial1 (TX/RX, 9600 baud)** 
 
 ### v0.1 vs v0.2 差异
 
-| 维度 | v0.1 (8.12) | v0.2 (8.31) |
-|------|------------|------------|
+| 维度 | v0.1 (8.12) | v0.2 (8.31，**当前**）|
+|------|------------|------------------|
 | 字符数 | 7 (`a-d/g-h/t`) | 9 (`a-i`) |
 | 继电器数 | 3 (PIN 41/42/43) | 5 (PIN 41-45) |
 | 组合键 | ❌ | ✅ `i` 联动关 44+45 |
 | PIN 43 加热膜 | `g`/`h` | `a`/`b` |
-| 批量接收 | ✅ `t` 触发 5 字符 | ❌ 移除 |
+| 批量接收 | ✅ `t` 触发 5 字符 | ❌ 移除（DF_fix_data 函数已删除）|
 
-**未决问题**：
-- 8.31 mpcode 是 Mind+ 工程（未直接编译验证），需要重新生成 Arduino C 代码并烧录验证
-- program_v3_1.ino 落后 8.31 一个版本 — 9.1 开学后需重新从 Mind+ 8.31 导出 Arduino C
+**同步状态（2026-08-31）**：
+- ✅ `arduino/program_v3_1.ino` 已重写 `DF_stir_stick_control` 函数（line 149-162）使用 v0.2 协议
+- ✅ `arduino/program_v3_1.ino` 已删除 `DF_fix_data` 函数（'t' 批量接收废弃）
+- ✅ `arduino/program_v3_1.ino` loop() 已移除 `DF_fix_data()` 调用
+- ✅ 头部注释已更新为 v0.2 协议说明
+
+**剩余 TODO（9.1 开学后）**：
+- 在 Mind+ 8.31 中正式重新生成 Arduino C 代码（替换当前手写同步的 .ino）
+- 5 路继电器物理负载标定（哪个 PIN 接加热膜/蠕动泵/电机/气泵）
 
 ## 复现验证
 
@@ -91,9 +97,10 @@ python -c "import serial; s=serial.Serial('COMx', 115200); print(s.readline())"
 # 3. 模拟触控屏发送
 python -c "import serial; s=serial.Serial('COMx', 9600); s.write(b'a')"  # 开加热膜
 python -c "import serial; s=serial.Serial('COMx', 9600); s.write(b'b')"  # 关加热膜
+python -c "import serial; s=serial.Serial('COMx', 9600); s.write(b'i')"  # 一键全停（44+45）
 ```
 
 ## 变更历史
 
-- **v0.2 (2026-08-31)** — 老师改版，5 路继电器 + 组合键 `i`
-- **v0.1 (2026-08-12)** — 初版，3 路继电器 + 批量接收 `t`
+- **v0.2 (2026-08-31)** — 老师改版，5 路继电器 + 组合键 `i`，同时同步到 `program_v3_1.ino`
+- **v0.1 (2026-08-12)** — 初版，3 路继电器 + 批量接收 `t`（已废弃）

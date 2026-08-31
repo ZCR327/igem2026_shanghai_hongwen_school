@@ -2,7 +2,7 @@
  * MindPlus
  * DFRobot, Mega2560
  *
- * BrewXOS PID v3.1 — 优化版 (2026.8.12)
+ * BrewXOS PID v3.1 — 优化版 (2026.8.12, **2026.8.31 同步触屏协议到 v0.2**)
  *
  * 优化来源：差分进化 + 网格搜索（optimize_pid.py）
  *   - Kp: 5.0 → 3.0
@@ -17,24 +17,17 @@
  *   5. 加 pinMode(HEATER_PIN, OUTPUT) 保证 PWM 正常
  *
  * ============================================================================
- * 触屏串口协议 v0.1（**当前代码使用，已落后**，8.31 老师改版已升级到 v0.2）
+ * 触屏串口协议 v0.2（**当前生效，与 8.31 老师改版一致**）
  * ============================================================================
- * 当前 DF_stir_stick_control() 用的是 8.12 那版 6 路协议：
- *   'a' = PIN 41 HIGH   'b' = PIN 41 LOW
- *   'c' = PIN 42 HIGH   'd' = PIN 42 LOW
- *   'g' = PIN 43 HIGH   'h' = PIN 43 LOW   ← 加热膜在 PIN 43
- *   't' = 触发 DF_fix_data() 批量接收 5 字符
+ * 5 路继电器 + 组合键 'i'（与 Mind+ 8.31 mpcode 完全同步）:
+ *   'a' = PIN 43 Open   'b' = PIN 43 Close  ← 加热膜
+ *   'c' = PIN 41 Open   'd' = PIN 41 Close  ← 蠕动泵 A
+ *   'e' = PIN 42 Open   'f' = PIN 42 Close  ← 蠕动泵 B
+ *   'g' = PIN 44 Open                       ← 搅拌电机
+ *   'h' = PIN 45 Open                       ← 备用气泵
+ *   'i' = PIN 44 + 45 一起关                ← 组合键（一键全停）
  *
- * 8.31 老师改版升级到 v0.2（5 路 + 组合键 i）:
- *   'a' = PIN 43 Open   'b' = PIN 43 Close  ← 加热膜改到 PIN 43 (符号反转)
- *   'c' = PIN 41 Open   'd' = PIN 41 Close
- *   'e' = PIN 42 Open   'f' = PIN 42 Close  ← 新增 PIN 42 独立开/关
- *   'g' = PIN 44 Open   'h' = PIN 45 Open
- *   'i' = PIN 44 + 45 一起关（组合键）
- *   't' 批量接收被移除
- *
- * ⚠️ 8.31 mpcode 是 Mind+ 工程，需要在 Mind+ 8.31 中重新"生成 Arduino C"才能用。
- *    直接烧本 .ino 还是 v0.1 旧协议。
+ * v0.1 协议（a/b/c/d/g/h/t, 8.12 那版）已废弃，DF_fix_data() 函数已删除。
  *
  * 协议对比表：docs/hardware/serial_protocol_20260831.md
  * Auto-tune 操作手册：docs/hardware/auto_tune_runbook_20260831.md
@@ -93,7 +86,6 @@ DFRobot_OxygenSensor Oxygen;
 void DF_end_data();
 void DF_mega2560_Reading_environmental_sensor_data(float mind_n_time);
 void DF_stir_stick_control(String mind_s_string);
-void DF_fix_data();
 void DF_setup();
 void DF_PID_output();
 
@@ -112,7 +104,6 @@ void loop() {
   if ((Serial1.available())) {
     mind_s_Serial_data = (String(char(Serial1.read())));
     DF_stir_stick_control(mind_s_Serial_data);
-    DF_fix_data();
   }
   else {
     DF_mega2560_Reading_environmental_sensor_data(5000);
@@ -156,23 +147,17 @@ void DF_mega2560_Reading_environmental_sensor_data(float mind_n_time) {
 }
 
 void DF_stir_stick_control(String mind_s_string) {
-  if ((mind_s_string=="a")) digitalWrite(41, HIGH);
-  if ((mind_s_string=="b")) digitalWrite(41, LOW);
-  if ((mind_s_string=="c")) { digitalWrite(42, HIGH); }
-  if ((mind_s_string=="d")) digitalWrite(42, LOW);
-  if ((mind_s_string=="g")) { digitalWrite(43, HIGH); }
-  if ((mind_s_string=="h")) digitalWrite(43, LOW);
-}
-
-void DF_fix_data() {
-  if ((mind_s_Serial_data=="t")) {
-    mind_s_total_data = "t";
-    for (int index = 0; index < 5; index++) {
-      delay(100);
-      mind_s_fix_data1 = (String(char(Serial1.read())));
-      mind_s_total_data = (String(mind_s_total_data) + String(mind_s_fix_data1));
-      yield();
-    }
+  if ((mind_s_string=="a")) digitalWrite(43, HIGH);  // 加热膜 开
+  if ((mind_s_string=="b")) digitalWrite(43, LOW);   // 加热膜 关
+  if ((mind_s_string=="c")) digitalWrite(41, HIGH);  // 蠕动泵 A 开
+  if ((mind_s_string=="d")) digitalWrite(41, LOW);   // 蠕动泵 A 关
+  if ((mind_s_string=="e")) digitalWrite(42, HIGH);  // 蠕动泵 B 开
+  if ((mind_s_string=="f")) digitalWrite(42, LOW);   // 蠕动泵 B 关
+  if ((mind_s_string=="g")) digitalWrite(44, HIGH);  // 搅拌电机 开
+  if ((mind_s_string=="h")) digitalWrite(45, HIGH);  // 备用气泵 开
+  if ((mind_s_string=="i")) {                         // 组合键: 搅拌电机 + 备用气泵 同时关
+    digitalWrite(44, LOW);
+    digitalWrite(45, LOW);
   }
 }
 
