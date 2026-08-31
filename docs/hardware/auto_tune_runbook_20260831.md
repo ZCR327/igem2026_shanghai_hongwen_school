@@ -1,0 +1,156 @@
+# Z-N Auto-Tune 操作手册 (v1.0, 2026-08-31)
+
+> **目的**：在 BrewXOS 装置上跑 Ziegler-Nichols 继电反馈自整定，得到实用 PID 参数 Kp/Ki/Kd。
+> **触发条件**：每次更换硬件（加热膜、传感器位置、罐体体积）后必须重跑；初次安装必跑。
+> **预期耗时**：30 min（auto-tune 阶段） + 5 min（烧回实用 PID） + 5 min（CSV 归档）。
+
+## 1. 硬件准备
+
+| 物料 | 位置 | 备注 |
+|------|------|------|
+| DFRduino Mega2560 主板 | 装置底板 | 已固定 |
+| 加热膜（24V, 10W） | 罐体外侧 | 接到继电器 PIN 43（HIGH = 通电） |
+| DS18B20 防水温度传感器 | 罐体内（液面下 2cm） | 接 PIN 47 (OneWire) |
+| 5 路继电器模块 | 装置左侧 | PIN 41-45 已分配 |
+| 触控屏 | 装置前 | 烧好 8.31 HMI 工程 |
+| USB 数据线 | 电脑 COM 端口 | 一根用于烧录 / 监控 Serial 0 |
+
+## 2. 软件准备
+
+| 文件 | 用途 |
+|------|------|
+| `arduino/auto_tune.ino` (9.8 KB) | 烧录的 Z-N 自整定 sketch |
+| `serial_24h_logger.py` (5.5 KB) | 串口 24h 接收器，存 CSV |
+| `run_24h_test.bat` (0.5 KB) | 一键启动 logger |
+| `optimize_pid.py` (8.2 KB) | 离线 Python 优化（auto-tune 出 K 后做对比） |
+| `arduino/program_v3_1.ino` (5.6 KB) | 实用 PID 程序（auto-tune 完成后烧回） |
+
+## 3. 操作流程
+
+### 步骤 1：烧录 Z-N auto-tune sketch
+
+```bash
+# Arduino IDE 或 arduino-cli
+arduino-cli upload -p COM3 --fqbn arduino:avr:mega cpu=atmega2560 auto_tune.ino
+```
+
+**预期行为**：
+- 板子重启后**所有继电器 OFF**（安全状态）
+- 继电器开始 bang-bang 切换：加热膜以全功率（100%）/全关（0%）周期性开关
+- 每秒打印一次当前温度 + 振荡周期
+
+### 步骤 2：启动串口 logger
+
+```bash
+# 改 COM 端口后双击运行
+.\run_24h_test.bat
+```
+
+**预期输出**：
+- CSV 落到 `data/auto_tune_<日期>.csv`
+- 格式：`timestamp,temp_c,heater_pwm,relay_state`
+- 文件名示例：`data/auto_tune_20260901.csv`
+
+### 步骤 3：等待 30 分钟
+
+观察：
+- 温度曲线出现**等幅振荡**（典型形态：正弦/方波混合）
+- 振荡周期 T（秒）= Z-N 公式里的 Tu
+- 临界增益 Ku = 4d / (π a)
+  - d = bang-bang 振幅（这里 = 加热膜全功率对应的温度变化率）
+  - a = 振荡振幅（峰峰值 / 2）
+
+### 步骤 4：记录 Z-N K 值
+
+auto_tune.ino 内部会**自动**检测振荡完成并打印：
+
+```
+*** Z-N Auto-Tune Complete ***
+Ku = 12.34
+Tu = 45.6 s
+Kp = 0.6 * Ku = 7.40
+Ki = 2 * Kp / Tu = 0.32
+Kd = Kp * Tu / 8 = 42.18
+```
+
+**把这些值抄下来** + **保存 CSV 文件** + **拍照串口输出**（iGEM wiki 引用）。
+
+### 步骤 5：烧回实用 PID 程序
+
+```bash
+arduino-cli upload -p COM3 --fqben arduino:avr:mega program_v3_1.ino
+```
+
+`program_v3_1.ino` 默认参数（**优化版 v3.1, 2026-8-12 仿真得出**）：
+
+| 参数 | 值 | 来源 |
+|------|---|------|
+| Kp | 3.0 | 优化: 5.0 → 3.0（防过冲） |
+| Ki | 0.05 | 保守值 |
+| Kd | 3.0 | 优化: 8.0 → 3.0（防过冲） |
+| target | 35°C | 优化: 37 → 35（XOS 净积累多 30-50%） |
+
+**对比验证**：把 Z-N 算出的 K 值 + 实用版 K 值同时跑 30 min，看哪个稳态误差小、超调小、稳态时间短。
+
+### 步骤 6：归档数据 + 写 wiki
+
+1. **CSV 归档**：
+   ```bash
+   git add data/auto_tune_20260901.csv
+   git commit -m "data(auto_tune): 9.1 实验室首次实测 Z-N K 值"
+   ```
+
+2. **更新 wiki/results.md** — 新增 **Hardware PID Validation** 章节：
+   ```markdown
+   ## Hardware PID Validation (9.1 实测)
+   - 设备：DFRduino Mega2560 + 加热膜 24V 10W + DS18B20
+   - 室温：28°C（上海 9 月初）
+   - 罐体：500 mL 玻璃烧杯
+   - Z-N K 值：Kp=?, Ki=?, Kd=?
+   - 实用版 K 值（v3.1）：Kp=3, Ki=0.05, Kd=3, target=35°C
+   - 稳态误差：±0.3°C
+   - 超调：<2°C
+   - 稳态时间：~12 min
+   - 截图：[串口输出](data/auto_tune_20260901.png)
+   - CSV：[原始数据](data/auto_tune_20260901.csv)
+   ```
+
+3. **推 commit**：
+   ```bash
+   git add .
+   git commit -m "docs(results): hardware PID validation 9.1 实测数据"
+   git push origin master
+   ```
+
+## 4. 故障排查
+
+| 现象 | 可能原因 | 解决 |
+|------|---------|------|
+| 温度不升 | 加热膜没接 / 继电器坏 | 用万用表测 PIN 43 在 HIGH 时是否有 24V |
+| 温度升太慢 | 室温太低 / 罐体太大 | 跑 60 min 而非 30 min |
+| 温度震荡消失（不振） | 加热功率不够 / 散热太快 | 减小目标温度差 / 加保温层 |
+| 串口无输出 | 波特率错 / COM 端口错 | 确认 115200 baud + 正确 COM 端口 |
+| DS18B20 读 -127°C | 接线松 / OneWire 库冲突 | 重新插拔 + 重启板子 |
+| 继电器咔哒响但温度不变 | 触点烧坏 | 换继电器模块 |
+
+## 5. 安全注意
+
+- ⚠️ 加热膜 24V 电源**独立于 USB**，烧录时**断开加热膜电源**
+- ⚠️ Z-N 阶段温度会冲到 50°C+，**罐体周围不放易燃物**
+- ⚠️ 跑完后必须烧回 `program_v3_1.ino`（带 PID 限幅），**别让 bang-bang 跑过夜**
+- ⚠️ 装置在 8.31 mpcode 模式下用触控屏控制 PID，**PID sketch 跟 bang-bang sketch 不能共存**
+
+## 6. 9.1 第一周时间表
+
+| 时间 | 任务 | 状态 |
+|------|------|------|
+| 周一 9.1 12:00 | 找数学老师面谈（带 IG1 成绩单 + 9231 邮件） | ⏳ |
+| 周二 9.2 下午 | 实验室拿装置 + 跑 Z-N auto-tune 30 min | ⏳ |
+| 周三 9.3 | 烧回 v3.1 + 验证 35°C 稳态 | ⏳ |
+| 周四 9.4 | 写 wiki/results.md Hardware PID 章节 | ⏳ |
+| 周五 9.5 | 推 commit | ⏳ |
+
+---
+
+**变更历史**
+- v1.0 (2026-08-31) — 初版，对应 iGEM 实机测试 0 阶段

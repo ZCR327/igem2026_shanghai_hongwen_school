@@ -15,6 +15,30 @@
  *   3. 传感器去 toInt() 保留 2 位小数
  *   4. USB Serial 改 115200（Serial1 触控屏 9600 锁死不能动）
  *   5. 加 pinMode(HEATER_PIN, OUTPUT) 保证 PWM 正常
+ *
+ * ============================================================================
+ * 触屏串口协议 v0.1（**当前代码使用，已落后**，8.31 老师改版已升级到 v0.2）
+ * ============================================================================
+ * 当前 DF_stir_stick_control() 用的是 8.12 那版 6 路协议：
+ *   'a' = PIN 41 HIGH   'b' = PIN 41 LOW
+ *   'c' = PIN 42 HIGH   'd' = PIN 42 LOW
+ *   'g' = PIN 43 HIGH   'h' = PIN 43 LOW   ← 加热膜在 PIN 43
+ *   't' = 触发 DF_fix_data() 批量接收 5 字符
+ *
+ * 8.31 老师改版升级到 v0.2（5 路 + 组合键 i）:
+ *   'a' = PIN 43 Open   'b' = PIN 43 Close  ← 加热膜改到 PIN 43 (符号反转)
+ *   'c' = PIN 41 Open   'd' = PIN 41 Close
+ *   'e' = PIN 42 Open   'f' = PIN 42 Close  ← 新增 PIN 42 独立开/关
+ *   'g' = PIN 44 Open   'h' = PIN 45 Open
+ *   'i' = PIN 44 + 45 一起关（组合键）
+ *   't' 批量接收被移除
+ *
+ * ⚠️ 8.31 mpcode 是 Mind+ 工程，需要在 Mind+ 8.31 中重新"生成 Arduino C"才能用。
+ *    直接烧本 .ino 还是 v0.1 旧协议。
+ *
+ * 协议对比表：docs/hardware/serial_protocol_20260831.md
+ * Auto-tune 操作手册：docs/hardware/auto_tune_runbook_20260831.md
+ * ============================================================================
  */
 #include <DFString.h>
 #include <DFRobot_PH.h>
