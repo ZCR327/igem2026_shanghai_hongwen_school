@@ -20,12 +20,19 @@
  * 触屏串口协议 v0.2（**当前生效，与 8.31 老师改版一致**）
  * ============================================================================
  * 5 路继电器 + 组合键 'i'（与 Mind+ 8.31 mpcode 完全同步）:
- *   'a' = PIN 43 Open   'b' = PIN 43 Close  ← 加热膜
+ *   'a' = PIN 43 Open   'b' = PIN 43 Close  ← 加热膜（主加热, PID 自动）
  *   'c' = PIN 41 Open   'd' = PIN 41 Close  ← 蠕动泵 A
  *   'e' = PIN 42 Open   'f' = PIN 42 Close  ← 蠕动泵 B
- *   'g' = PIN 44 Open                       ← 搅拌电机
- *   'h' = PIN 45 Open                       ← 备用气泵
- *   'i' = PIN 44 + 45 一起关                ← 组合键（一键全停）
+ *   'g' = PIN 44 Open                       ← **加热（副/强加热继电器）** 8.31 老师确认
+ *   'h' = PIN 45 Open                       ← **制冷（TEC 帕尔贴继电器）** 8.31 老师确认
+ *   'i' = PIN 44 + 45 一起关                ← 组合键（关副加热 + 制冷）
+ *
+ * **关键设计**（8.31 老师改版 + 8.12 PID v3.1 协同）:
+ *   - PIN 9 加热膜 PWM 输出（PID 自动控制，0-100% 功率，HEATER_PIN）
+ *   - PIN 44 副加热继电器（手动 / 自动, 强加热时用, 解决加热膜功率不足）
+ *   - PIN 45 制冷继电器（手动 / 自动, 过冲时主动冷下来, 解释 Kd 从 8.0 降到 3.0）
+ *   - PID 自动控制只用 PIN 9 加热膜；PIN 44/45 继电器当前是触屏手动控制
+ *   - **TODO v3.2**: PID 升级为双向控制（加热膜 PWM + 帕尔贴开关协同）
  *
  * v0.1 协议（a/b/c/d/g/h/t, 8.12 那版）已废弃，DF_fix_data() 函数已删除。
  *
@@ -153,9 +160,9 @@ void DF_stir_stick_control(String mind_s_string) {
   if ((mind_s_string=="d")) digitalWrite(41, LOW);   // 蠕动泵 A 关
   if ((mind_s_string=="e")) digitalWrite(42, HIGH);  // 蠕动泵 B 开
   if ((mind_s_string=="f")) digitalWrite(42, LOW);   // 蠕动泵 B 关
-  if ((mind_s_string=="g")) digitalWrite(44, HIGH);  // 搅拌电机 开
-  if ((mind_s_string=="h")) digitalWrite(45, HIGH);  // 备用气泵 开
-  if ((mind_s_string=="i")) {                         // 组合键: 搅拌电机 + 备用气泵 同时关
+  if ((mind_s_string=="g")) digitalWrite(44, HIGH);  // 加热（副/强加热继电器）
+  if ((mind_s_string=="h")) digitalWrite(45, HIGH);  // 制冷（TEC 帕尔贴继电器）
+  if ((mind_s_string=="i")) {                         // 组合键: 副加热 + 制冷 同时关
     digitalWrite(44, LOW);
     digitalWrite(45, LOW);
   }
