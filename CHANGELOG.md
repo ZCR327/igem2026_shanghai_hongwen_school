@@ -6,6 +6,31 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ---
 
+## [Unreleased] - 2026-09-07 to present
+
+### Added (2026-09-07 v1.0 metabolic pathway ODE)
+- **9-state metabolic pathway model** (`modeling/brewxos_pathway_v1.py`, 16 KB)
+  - States: Xylan / Xylose / XOS / X_eng (B. subtilis) / X_bifido (B. longum) / SCFA / T / pH / DO
+  - Kinetics: Michaelis-Menten xylanase hydrolysis (with XOS product inhibition) + Monod growth (logistic-capped) + Arrhenius T compensation + pH bell curve + 1st-order RC for T/pH/DO (dynamically consistent with PID v3.1/v3.2 sim)
+  - Solver: `scipy.integrate.solve_ivp` (LSODA, 48h horizon, 0.1h output, ~3 s wall time)
+  - Bifidobacterium post-12h pulse inoculation (0.1 g/L) for two-stage prebiotic chain
+- **Wiki Modeling section** (`wiki/design/modeling.md`, 11.9 KB, 10 sections)
+  - Fills the Day 6 gap from `modeling_comparison.md` §9
+  - Cross-disciplinary bridge to FTC PID control (state, ODE, PID, calibration — same engineering language)
+  - Full parameter table with literature sources + 9.3 PID v3.2 references + roadmap to v2.0 FBA
+- **48h batch results**: Xylan 87% consumed, **SCFA 3.13 g/L (31.3% mass yield, literature range 25-45%)**, B. subtilis 4.85 g/L (logistic cap), B. longum 1.13 g/L, T 37.1°C, pH 6.11, DO 6.00
+- **Outputs** per run: CSV (481 rows) + 6-panel PNG (120 dpi) + JSON metrics + auto-saved with timestamp
+- **Key physical correction**: added `(1 - X/X_max)` logistic cap after first run showed X_eng runaway to 800 g/L — now physically bounded
+
+### Pending
+- [ ] Wet-lab data: 24h xylanase secretion assay (calibrate `q_xylanase`)
+- [ ] Wet-lab data: B. longum growth on BSG-derived XOS (validate Bifido subsystem)
+- [ ] v1.1: fit `q_xylanase` / `Ki_XOS` via `scipy.optimize.curve_fit` once wet-lab data arrives
+- [ ] v1.2: add BSG pretreatment ODE (alkaline extraction + temperature)
+- [ ] v2.0: Flux Balance Analysis (FBA) on B. subtilis WB800 genome-scale model
+
+---
+
 ## [Unreleased] - 2026-08-10 to 2026-09-03
 
 ### Added (2026-09-03 v3.2 dual-temp control)
