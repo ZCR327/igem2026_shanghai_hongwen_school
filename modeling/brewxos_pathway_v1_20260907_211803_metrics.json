@@ -1,0 +1,26 @@
+{
+  "timestamp": "20260907_211803",
+  "horizon_h": 48.0,
+  "final": {
+    "xylan_consumed_gL": 0.03,
+    "conversion_pct": 0.3,
+    "xos_produced_gL": 0.024,
+    "xos_yield_pct": 0.24,
+    "scfa_produced_gL": 0.001,
+    "xylose_residual_gL": 0.003,
+    "x_eng_gL": 4.715,
+    "x_bifido_gL": 0.007,
+    "T_C": 30.03,
+    "pH": 6.5,
+    "DO_mgL": 6.12
+  },
+  "parameters": {
+    "engineered_strain": "Bacillus subtilis WB800 (xylanase+)",
+    "probiotic_strain": "Bifidobacterium longum",
+    "xylanase_kcat_U_mg": 22.0,
+    "Km_xylanase_mg_mL": 3.2,
+    "Ki_XOS_gL": 0.5,
+    "T_set_C": 37.0,
+    "pH_set": 6.5
+  }
+}
